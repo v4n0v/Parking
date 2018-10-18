@@ -28,7 +28,7 @@ private const val PERMISSION_FOR_ALL_REQUEST_CODE = 1654
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, MainView {
 
     override fun initialiaze() {
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener { _ ->
            toast("НАЛАСЯ!")
         }
 
@@ -46,8 +46,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setSupportActionBar(toolbar)
 
         requestPermissions()
-
-
     }
 
     override fun onBackPressed() {
@@ -62,7 +60,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val requiredPermissionsFromManifest = Helper.getNotRequestedPermissions(this)
         for (s in requiredPermissionsFromManifest) {
             if (ContextCompat.checkSelfPermission(this, s) != PackageManager.PERMISSION_GRANTED) {
-                showInformDialog("В следующем диалоге нажмите \"Разрешить\" Иначе приложение не сможет работать!", DialogInterface.OnClickListener { _, _ ->
+                showInformDialog("Запрос разрешения", "В следующем диалоге нажмите \"Разрешить\" Иначе приложение не сможет работать!", DialogInterface.OnClickListener { _, _ ->
                     ActivityCompat.requestPermissions(this@MainActivity,
                             requiredPermissionsFromManifest.toTypedArray(),
                             PERMISSION_FOR_ALL_REQUEST_CODE)
@@ -70,16 +68,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 return
             }
         }
-    }
-
-    private fun showInformDialog(message: String, onClickListener: DialogInterface.OnClickListener) {
-        AlertDialog.Builder(this)
-                .setTitle("Запрос разрешения")
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton("ОК", onClickListener)
-                .create()
-                .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
