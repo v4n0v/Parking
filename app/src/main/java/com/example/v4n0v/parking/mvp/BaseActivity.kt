@@ -9,6 +9,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 
 open class BaseActivity:MvpAppCompatActivity(){
 
+
     @SuppressLint("LogNotTimber")
     fun log(msg:String){
         Log.d(this.javaClass.simpleName, msg)

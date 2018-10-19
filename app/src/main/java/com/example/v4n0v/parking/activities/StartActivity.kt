@@ -1,35 +1,45 @@
-package com.example.v4n0v.parking.mvp
+package com.example.v4n0v.parking.activities
 
-import android.Manifest
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
-import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.v4n0v.parking.R
+import com.example.v4n0v.parking.mvp.BaseActivity
+import com.example.v4n0v.parking.mvp.presenters.MainPresenter
 import com.example.v4n0v.parking.mvp.views.MainView
 import com.example.v4n0v.parking.utils.Helper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import timber.log.Timber
 
 
 const val UNIQUE_PERIODIC_WORK_NAME = "sync"
 private const val PERMISSION_FOR_ALL_REQUEST_CODE = 1654
 
+class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, MainView {
 
+    @InjectPresenter
+    lateinit var presenter: MainPresenter
+
+
+    @ProvidePresenter
+    internal fun providePresenter(): MainPresenter {
+        return MainPresenter()
+    }
     override fun initialiaze() {
+        Timber.d(  " StartActivity initialiaze")
         fab.setOnClickListener { _ ->
-           toast("НАЛАСЯ!")
+            toast("FAAAAAAAB")
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -48,6 +58,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         requestPermissions()
     }
 
+
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
@@ -61,13 +72,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         for (s in requiredPermissionsFromManifest) {
             if (ContextCompat.checkSelfPermission(this, s) != PackageManager.PERMISSION_GRANTED) {
                 showInformDialog("Запрос разрешения", "В следующем диалоге нажмите \"Разрешить\" Иначе приложение не сможет работать!", DialogInterface.OnClickListener { _, _ ->
-                    ActivityCompat.requestPermissions(this@MainActivity,
+                    ActivityCompat.requestPermissions(this@StartActivity,
                             requiredPermissionsFromManifest.toTypedArray(),
                             PERMISSION_FOR_ALL_REQUEST_CODE)
                 })
                 return
             }
         }
+        Timber.d(  "request complete")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

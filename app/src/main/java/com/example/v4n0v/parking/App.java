@@ -2,6 +2,8 @@ package com.example.v4n0v.parking;
 
 import android.app.Application;
 
+import timber.log.Timber;
+
 public class App extends Application {
 
     private App instance;
@@ -9,6 +11,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        Timber.plant(new Timber.DebugTree());
     }
 
     public App getInstance(){
