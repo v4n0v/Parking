@@ -42,9 +42,12 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
         return MainPresenter()
     }
 
-    override fun initialiaze() {
-        checkState()
+    override fun onResume() {
+        super.onResume()
+        presenter.checkState()
+    }
 
+    override fun initialiaze() {
         Timber.d(" StartActivity initialiazzzze")
         fab.setOnClickListener { _ ->
             toast("Нахер нужна эта кнопка?")
@@ -75,23 +78,15 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
     }
 
 
-    private fun getAppInstalled(): Intent? {
-        val list = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-        for (app in list)
-            if (app.processName == PACKAGE_NAME)
-                return packageManager.getLaunchIntentForPackage(PACKAGE_NAME)
-
-
-        return null
-    }
-
-    private fun checkState() {
+    override fun checkState() {
         if (Helper.checkAccessibilityService(this)) {
             tvServiceStatus.text = getString(R.string.service_Ok)
             ivIconStatus.setImageDrawable(Helper.getDrawable(this, Items.OK))
+            btnStartService.text=getString(R.string.service_stop)
         } else {
             tvServiceStatus.text = getString(R.string.service_unavailable)
             ivIconStatus.setImageDrawable(Helper.getDrawable(this, Items.UNAVAILABLE))
+            btnStartService.text=getString(R.string.service_start)
         }
 
         if (!Helper.checkPermissions(this)) {

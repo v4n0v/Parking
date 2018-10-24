@@ -12,6 +12,7 @@ class MainPresenter : MvpPresenter<MainView>() {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         initialize()
+        viewState.checkState()
         viewState.initialiaze()
     }
 
@@ -19,4 +20,7 @@ class MainPresenter : MvpPresenter<MainView>() {
         Timber.d("MainPresenter init")
     }
 
+    fun checkState(){
+        viewState.checkState()
+    }
 }

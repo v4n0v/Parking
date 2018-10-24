@@ -3,6 +3,4 @@
     android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged"
     android:accessibilityFlags="flagDefault|flagIncludeNotImportantViews|flagReportViewIds"
     android:canRetrieveWindowContent="true"
-    android:accessibilityFeedbackType="feedbackGeneric"
-    android:packageNames="com.whatsapp"
-    android:settingsActivity="com.example.v4n0v.parking.activities.StartActivity" />
+    android:settingsActivity="com.v4n0v.memgan.parking.activities.StartActivity" />

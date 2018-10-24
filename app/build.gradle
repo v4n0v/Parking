@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.v4n0v.parking"
+        applicationId "com.v4n0v.memgan.parking"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1

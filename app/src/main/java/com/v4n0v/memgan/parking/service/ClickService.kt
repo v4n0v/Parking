@@ -8,6 +8,11 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.v4n0v.memgan.parking.utils.Helper.ACTION_PARKING_TIME
 import com.v4n0v.memgan.parking.utils.Helper.EXTRA_IS_READY_TO_PARK
 import timber.log.Timber
+import android.R.attr.packageNames
+import android.accessibilityservice.AccessibilityServiceInfo
+import com.v4n0v.memgan.parking.utils.Helper.PACKAGE_NAME
+
+
 // ru.mos.parking.mobile
 class ClickService :AccessibilityService(){
     override fun onInterrupt() {
@@ -54,6 +59,19 @@ class ClickService :AccessibilityService(){
 //        textNodes.forEach { it.recycle() }
         nodeInfo.recycle()
 
+    }
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        val info = AccessibilityServiceInfo()
+        info.flags = AccessibilityServiceInfo.DEFAULT or
+                AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS or
+                AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
+
+        info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK
+        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
+        info.packageNames = arrayOf(PACKAGE_NAME)
+        serviceInfo = info
     }
     private fun setSuccess(id: Long) {
         Timber.d("setSuccess then finally")

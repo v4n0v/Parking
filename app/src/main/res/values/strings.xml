@@ -8,7 +8,11 @@
     <string name="action_settings">Settings</string>
     <string name="start_service">Запустить сервис</string>
     <string name="action_button">Парканика</string>
-    <string name="accessibilityservice_id">com.v4n0v.memgan.parking.service/.ClickService</string>
-    <string name="service_unavailable">Сервис не доступен</string>
+    <string name="accessibility_service_label">ClickService</string>
+    <string name="accessibilityservice_id">com.v4n0v.memgan.parking/.service.ClickService</string>
+    <!--<string name="accessibilityservice_id">com.example.v4n0v.parking/com.v4n0v.memgan.parking.service.ClickService</string>-->
+    <string name="service_unavailable">Сервис недоступен</string>
     <string name="service_Ok">Сервис работает</string>
+    <string name="service_start">Запустить сервис</string>
+    <string name="service_stop">Остановить сервис</string>
 </resources>

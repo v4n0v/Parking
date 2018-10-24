@@ -8,6 +8,7 @@ import android.support.v4.content.res.ResourcesCompat
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import com.v4n0v.memgan.parking.R
+import timber.log.Timber
 
 enum class Items { UNAVAILABLE, OK }
 
@@ -38,6 +39,7 @@ object Helper {
             val runningServices = am
                     .getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK)
             for (service in runningServices) {
+                Timber.d("ServiceId = ${service.id}")
                 if (id == service.id) {
                     return true
                 }
