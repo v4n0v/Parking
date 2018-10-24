@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
 
 object Helper {
+    const val EXTRA_IS_READY_TO_PARK = "extra is ready to park"
+    const val ACTION_PARKING_TIME = "action parking time"
 
     fun checkPermissions(context: Context): Boolean {
         with(context) {

@@ -73,7 +73,7 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
             if (ContextCompat.checkSelfPermission(this, s) != PackageManager.PERMISSION_GRANTED) {
                 showInformDialog("Запрос разрешения", "В следующем диалоге нажмите \"Разрешить\" Иначе приложение не сможет работать!", DialogInterface.OnClickListener { _, _ ->
                     ActivityCompat.requestPermissions(this@StartActivity,
-                            requiredPermissionsFromManifest.toTypedArray(),
+                                requiredPermissionsFromManifest.toTypedArray(),
                             PERMISSION_FOR_ALL_REQUEST_CODE)
                 })
                 return

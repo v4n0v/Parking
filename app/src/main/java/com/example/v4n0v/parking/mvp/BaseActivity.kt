@@ -1,18 +1,15 @@
 package com.example.v4n0v.parking.mvp
 
-import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.widget.Toast
 import com.arellomobile.mvp.MvpAppCompatActivity
+import timber.log.Timber
 
 open class BaseActivity:MvpAppCompatActivity(){
 
-
-    @SuppressLint("LogNotTimber")
     fun log(msg:String){
-        Log.d(this.javaClass.simpleName, msg)
+        Timber.d(msg)
     }
 
     fun toast(msg:String){
