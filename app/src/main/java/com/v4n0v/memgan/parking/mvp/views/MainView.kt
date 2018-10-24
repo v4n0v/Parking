@@ -1,4 +1,4 @@
-package com.example.v4n0v.parking.mvp.views
+package com.v4n0v.memgan.parking.mvp.views
 
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy

@@ -19,11 +19,11 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        tools:text="Сервис не доступен" />
+        app:layout_constraintTop_toBottomOf="@+id/ivIconStatus"
+        tools:text="@string/service_unavailable" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/ivIconStatus"
         android:layout_width="@dimen/big_icon"
         android:layout_height="@dimen/big_icon"
         android:layout_marginTop="@dimen/big_margin"

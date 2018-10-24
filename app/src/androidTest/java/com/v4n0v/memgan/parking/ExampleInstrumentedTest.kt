@@ -1,4 +1,4 @@
-package com.example.v4n0v.parking
+package com.v4n0v.memgan.parking
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4

@@ -1,8 +1,8 @@
-package com.example.v4n0v.parking.mvp.presenters
+package com.v4n0v.memgan.parking.mvp.presenters
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.example.v4n0v.parking.mvp.views.MainView
+import com.v4n0v.memgan.parking.mvp.views.MainView
 import timber.log.Timber
 
 @InjectViewState

@@ -1,13 +1,12 @@
-package com.example.v4n0v.parking.service
+package com.v4n0v.memgan.parking.service
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.content.IntentFilter
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import com.example.v4n0v.parking.utils.Helper.ACTION_PARKING_TIME
-import com.example.v4n0v.parking.utils.Helper.EXTRA_IS_READY_TO_PARK
+import com.v4n0v.memgan.parking.utils.Helper.ACTION_PARKING_TIME
+import com.v4n0v.memgan.parking.utils.Helper.EXTRA_IS_READY_TO_PARK
 import timber.log.Timber
 // ru.mos.parking.mobile
 class ClickService :AccessibilityService(){

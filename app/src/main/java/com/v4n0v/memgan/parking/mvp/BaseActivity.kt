@@ -1,4 +1,4 @@
-package com.example.v4n0v.parking.mvp
+package com.v4n0v.memgan.parking.mvp
 
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
