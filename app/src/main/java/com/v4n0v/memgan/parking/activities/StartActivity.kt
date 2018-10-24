@@ -19,6 +19,8 @@ import com.v4n0v.memgan.parking.mvp.BaseActivity
 import com.v4n0v.memgan.parking.mvp.presenters.MainPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
 import com.v4n0v.memgan.parking.utils.Helper
+import com.v4n0v.memgan.parking.utils.Helper.ACTION_PARKING_TIME
+import com.v4n0v.memgan.parking.utils.Helper.EXTRA_IS_READY_TO_PARK
 import com.v4n0v.memgan.parking.utils.Helper.PACKAGE_NAME
 import com.v4n0v.memgan.parking.utils.Items
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,8 +28,6 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
 
-
-const val UNIQUE_PERIODIC_WORK_NAME = "sync"
 private const val PERMISSION_FOR_ALL_REQUEST_CODE = 1654
 
 class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -62,13 +62,14 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
         }
 
         btnPark.setOnClickListener {
-
             val parkIntent = packageManager.getLaunchIntentForPackage(PACKAGE_NAME)
             if (parkIntent != null) {
 //                parkIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 //                parkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
+                val clickIntent = Intent(ACTION_PARKING_TIME)
+                clickIntent.putExtra(EXTRA_IS_READY_TO_PARK, true)
                 startActivity(parkIntent)
+                applicationContext.sendStickyBroadcast(clickIntent)
             } else
                 toast("Приложение не установлено")
 
