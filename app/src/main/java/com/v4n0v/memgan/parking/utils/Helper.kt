@@ -14,6 +14,7 @@ enum class Items { UNAVAILABLE, OK }
 
 object Helper {
     const val EXTRA_IS_READY_TO_PARK = "extra is ready to park"
+    const val EXIT_ID = "exit id"
     const val ACTION_PARKING_TIME = "action parking time"
     const val PACKAGE_NAME = "ru.mos.parking.mobile"
 

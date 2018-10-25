@@ -20,6 +20,7 @@ import com.v4n0v.memgan.parking.mvp.presenters.MainPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
 import com.v4n0v.memgan.parking.utils.Helper
 import com.v4n0v.memgan.parking.utils.Helper.ACTION_PARKING_TIME
+import com.v4n0v.memgan.parking.utils.Helper.EXIT_ID
 import com.v4n0v.memgan.parking.utils.Helper.EXTRA_IS_READY_TO_PARK
 import com.v4n0v.memgan.parking.utils.Helper.PACKAGE_NAME
 import com.v4n0v.memgan.parking.utils.Items
@@ -27,6 +28,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
+import java.util.*
 
 private const val PERMISSION_FOR_ALL_REQUEST_CODE = 1654
 
@@ -68,6 +70,7 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
 //                parkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 val clickIntent = Intent(ACTION_PARKING_TIME)
                 clickIntent.putExtra(EXTRA_IS_READY_TO_PARK, true)
+                clickIntent.putExtra(EXIT_ID, UUID.randomUUID().toString())
                 startActivity(parkIntent)
                 applicationContext.sendStickyBroadcast(clickIntent)
             } else
