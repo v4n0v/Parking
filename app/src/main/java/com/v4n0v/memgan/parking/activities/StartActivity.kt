@@ -22,6 +22,7 @@ import com.v4n0v.memgan.parking.utils.Helper
 import com.v4n0v.memgan.parking.utils.Helper.ACTION_PARKING_TIME
 import com.v4n0v.memgan.parking.utils.Helper.EXIT_ID
 import com.v4n0v.memgan.parking.utils.Helper.EXTRA_IS_READY_TO_PARK
+import com.v4n0v.memgan.parking.utils.Helper.EXTRA_PAY_BUTTON_CLICKED
 import com.v4n0v.memgan.parking.utils.Helper.PACKAGE_NAME
 import com.v4n0v.memgan.parking.utils.Items
 import kotlinx.android.synthetic.main.activity_main.*
@@ -102,6 +103,11 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        val clicked = intent.getBooleanExtra(EXTRA_PAY_BUTTON_CLICKED, false)
+        if (clicked){
+            Timber.d("Button Оплатить from Accessibility clicked")
+        }
     }
 
 

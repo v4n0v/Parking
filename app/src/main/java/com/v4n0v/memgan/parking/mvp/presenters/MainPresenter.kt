@@ -16,11 +16,11 @@ class MainPresenter : MvpPresenter<MainView>() {
         viewState.initialiaze()
     }
 
-    fun initialize() {
+    private fun initialize() {
         Timber.d("MainPresenter init")
     }
 
-    fun checkState(){
+    fun checkState() {
         viewState.checkState()
     }
 }

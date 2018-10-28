@@ -2,19 +2,26 @@ package com.v4n0v.memgan.parking.service
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.IntentFilter
+import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.v4n0v.memgan.parking.utils.Helper.ACTION_PARKING_TIME
+import com.v4n0v.memgan.parking.utils.Helper.BUTTON_PAY
 import com.v4n0v.memgan.parking.utils.Helper.EXIT_ID
 import com.v4n0v.memgan.parking.utils.Helper.EXTRA_IS_READY_TO_PARK
+import com.v4n0v.memgan.parking.utils.Helper.EXTRA_PAY_BUTTON_CLICKED
+import com.v4n0v.memgan.parking.utils.Helper.HOME_PACKAGE_NAME
 import com.v4n0v.memgan.parking.utils.Helper.PACKAGE_NAME
 import timber.log.Timber
+import java.util.*
 
 
 // is clickable android.widget.Button text= ОПЛАТИТЬ ru.mos.parking.mobile:id/parking_park_pay
 //is clickable   android.widget.EditText text= Номер парковки / билета ru.mos.parking.mobile:id/parking_parkId
-class ClickService : AccessibilityService() {
+class ParkingService : AccessibilityService() {
     override fun onInterrupt() {
         interrupted = true
         Timber.d("interrupted")
@@ -45,15 +52,73 @@ class ClickService : AccessibilityService() {
         val exitId = intent.getStringExtra(EXIT_ID)
         if (exitId.isEmpty())
             return
+        val eventType = event.eventType
+        when (eventType) {
+            AccessibilityEvent.TYPE_VIEW_CLICKED -> {
+                logEvent(nodeInfo)
+                if (nodeInfo.viewIdResourceName == BUTTON_PAY) {
+                    Timber.d("onAccessibilityEvent pay button clicked")
+                    goBack()
+                }
+            }
 
-        if (timeToFinishId != exitId)
-            if (handleParkClick(nodeInfo, exitId))
-                Timber.d("onAccessibilityEvent job is done, Im awesome!")
+            AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
+            }
+
+        }
+
+        if (timeToFinishId != exitId) {
+            Timber.d("onAccessibilityEvent $timeToFinishId != $exitId")
+            if (listenParkingClick(nodeInfo))
+                Timber.d("onAccessibilityEvent button clicked")
+        }
+//            if (handleParkClick(nodeInfo, exitId))
+//                Timber.d("onAccessibilityEvent job is done, Im awesome!")
 
         interrupted = false
     }
 
-    private fun handleParkClick(nodeInfo: AccessibilityNodeInfo, exitId :String): Boolean {
+    private fun goBack(){
+        val parkIntent = packageManager.getLaunchIntentForPackage(HOME_PACKAGE_NAME)
+        if (parkIntent != null) {
+            parkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            parkIntent.putExtra(EXTRA_PAY_BUTTON_CLICKED, true)
+            startActivity(parkIntent)
+        }
+    }
+
+    private fun logEvent(nodeInfo: AccessibilityNodeInfo) {
+        Timber.d("onAccessibilityEvent\nClassName: ${nodeInfo.className} \nText: ${nodeInfo.text} \nViewIdResourceName: ${nodeInfo.viewIdResourceName}\nisClickable: ${nodeInfo.isClickable}")
+    }
+
+    override fun onKeyEvent(event: KeyEvent?): Boolean {
+//        return super.onKeyEvent(event)
+
+        val action = event?.action
+        Timber.d("onKeyEvent action = ${action.toString()}")
+        event?.source
+
+        return false
+    }
+
+    private fun listenParkingClick(nodeInfo: AccessibilityNodeInfo): Boolean {
+        if (!interrupted) {
+            val buttonNodes = nodeInfo.findAccessibilityNodeInfosByViewId("ru.mos.parking.mobile:id/parking_park_pay")
+            Timber.d("onAccessibilityEvent button found")
+
+            buttonNodes.firstOrNull {
+                it.isClickable
+            }?.run {
+                if (this.isSelected) {
+                    Timber.d("onAccessibilityEvent button is selected")
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    private fun handleParkClick(nodeInfo: AccessibilityNodeInfo, exitId: String): Boolean {
         var success = false
 //        Log.d(TAG, "handleMessage textNodesSize ${textNodes.size}")
 //        if (!interrupted && textNodes.any { it.text.toString() == text }) {
@@ -98,7 +163,7 @@ class ClickService : AccessibilityService() {
         serviceInfo = info
     }
 
-    private fun setSuccess(id :String) {
+    private fun setSuccess(id: String) {
         Timber.d("setSuccess then finally")
         timeToFinishId = id
     }

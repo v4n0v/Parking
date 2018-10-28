@@ -35,7 +35,7 @@
         </activity>
 
         <service
-            android:name="com.v4n0v.memgan.parking.service.ClickService"
+            android:name="com.v4n0v.memgan.parking.service.ParkingService"
             android:label="@string/accessibility_service_label"
             android:process=":parking_process"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">

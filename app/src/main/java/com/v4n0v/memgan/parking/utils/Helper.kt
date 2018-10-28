@@ -1,6 +1,7 @@
 package com.v4n0v.memgan.parking.utils
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
@@ -9,6 +10,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import com.v4n0v.memgan.parking.R
 import timber.log.Timber
+import java.util.*
 
 enum class Items { UNAVAILABLE, OK }
 
@@ -17,6 +19,9 @@ object Helper {
     const val EXIT_ID = "exit id"
     const val ACTION_PARKING_TIME = "action parking time"
     const val PACKAGE_NAME = "ru.mos.parking.mobile"
+    const val HOME_PACKAGE_NAME = "com.v4n0v.memgan.parking"
+    const val BUTTON_PAY = "ru.mos.parking.mobile:id/parking_park_pay"
+    const val EXTRA_PAY_BUTTON_CLICKED = "pay button clicked"
 
     fun checkPermissions(context: Context): Boolean {
         with(context) {
@@ -49,6 +54,7 @@ object Helper {
         }
     }
 
+
     fun getDrawable(c: Context, item: Items): Drawable? {
         return when (item) {
             Items.UNAVAILABLE -> ResourcesCompat.getDrawable(c.resources, R.drawable.ic_do_not_disturb, null)
@@ -56,6 +62,8 @@ object Helper {
         }
 
     }
+
+
 
     fun getNotRequestedPermissions(context: Context): List<String> {
         with(context) {
