@@ -12,8 +12,9 @@ class MainPresenter : MvpPresenter<MainView>() {
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         initialize()
-        viewState.checkState()
+
         viewState.initialiaze()
+//        viewState.checkState()
     }
 
     private fun initialize() {

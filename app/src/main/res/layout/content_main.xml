@@ -12,51 +12,35 @@
         android:id="@+id/tvServiceStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/std_margin"
-        android:layout_marginTop="@dimen/big_margin"
-        android:layout_marginEnd="@dimen/std_margin"
-        android:textSize="@dimen/H1"
+        android:layout_marginEnd="8dp"
+        android:textSize="@dimen/text"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivIconStatus"
+        app:layout_constraintBottom_toBottomOf="@+id/ivIconStatus"
+        app:layout_constraintEnd_toStartOf="@+id/ivIconStatus"
+        app:layout_constraintTop_toTopOf="@+id/ivIconStatus"
         tools:text="@string/service_unavailable" />
 
     <ImageView
         android:id="@+id/ivIconStatus"
-        android:layout_width="@dimen/big_icon"
-        android:layout_height="@dimen/big_icon"
-        android:layout_marginTop="@dimen/big_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
 
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_do_not_disturb" />
 
-    <Button
-        android:id="@+id/btnStartService"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/start_service"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvServiceStatus" />
-
-    <Button
-        android:id="@+id/btnPark"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/action_button"
-        android:textSize="@dimen/H1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnStartService" />
+        app:layout_constraintTop_toBottomOf="@+id/tvServiceStatus">
+
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -15,26 +16,25 @@ import android.view.MenuItem
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.v4n0v.memgan.parking.R
+import com.v4n0v.memgan.parking.fragments.FragmentNoService
+import com.v4n0v.memgan.parking.fragments.FragmentSetDuration
+import com.v4n0v.memgan.parking.fragments.FragmentStartParking
 import com.v4n0v.memgan.parking.mvp.BaseActivity
 import com.v4n0v.memgan.parking.mvp.presenters.MainPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
 import com.v4n0v.memgan.parking.utils.Helper
-import com.v4n0v.memgan.parking.utils.Helper.ACTION_PARKING_TIME
-import com.v4n0v.memgan.parking.utils.Helper.EXIT_ID
-import com.v4n0v.memgan.parking.utils.Helper.EXTRA_IS_READY_TO_PARK
 import com.v4n0v.memgan.parking.utils.Helper.EXTRA_PAY_BUTTON_CLICKED
-import com.v4n0v.memgan.parking.utils.Helper.PACKAGE_NAME
 import com.v4n0v.memgan.parking.utils.Items
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import timber.log.Timber
-import java.util.*
 
 private const val PERMISSION_FOR_ALL_REQUEST_CODE = 1654
 
 class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    enum class State { NO_SERVICE, PARKING, DURATION, TIMER }
 
     @InjectPresenter
     lateinit var presenter: MainPresenter
@@ -47,11 +47,12 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
 
     override fun onResume() {
         super.onResume()
+
         presenter.checkState()
     }
 
     override fun initialiaze() {
-        Timber.d(" StartActivity initialiazzzze")
+        log(" StartActivity initialiazzzze")
         fab.setOnClickListener { _ ->
             toast("Нахер нужна эта кнопка?")
         }
@@ -60,26 +61,26 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-        btnStartService.setOnClickListener {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-        }
+        ivIconStatus.setOnClickListener { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
 
-        btnPark.setOnClickListener {
-            val parkIntent = packageManager.getLaunchIntentForPackage(PACKAGE_NAME)
-            if (parkIntent != null) {
-//                parkIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//                parkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                val clickIntent = Intent(ACTION_PARKING_TIME)
-                clickIntent.putExtra(EXTRA_IS_READY_TO_PARK, true)
-                clickIntent.putExtra(EXIT_ID, UUID.randomUUID().toString())
-                startActivity(parkIntent)
-                applicationContext.sendStickyBroadcast(clickIntent)
-            } else
-                toast("Приложение не установлено")
-
-
-        }
         nav_view.setNavigationItemSelectedListener(this)
+    }
+
+    private fun switchFragment(state: State) {
+        when (state) {
+            State.TIMER -> {
+                Timber.d("TIMER")
+            }
+            State.DURATION -> {
+                beginTransaction(FragmentSetDuration())
+            }
+            State.PARKING -> {
+                beginTransaction(FragmentStartParking())
+            }
+            State.NO_SERVICE -> {
+                beginTransaction(FragmentNoService())
+            }
+        }
     }
 
 
@@ -87,11 +88,16 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
         if (Helper.checkAccessibilityService(this)) {
             tvServiceStatus.text = getString(R.string.service_Ok)
             ivIconStatus.setImageDrawable(Helper.getDrawable(this, Items.OK))
-            btnStartService.text=getString(R.string.service_stop)
+            val clicked = intent.getBooleanExtra(EXTRA_PAY_BUTTON_CLICKED, false)
+            if (clicked)
+                switchFragment(State.DURATION)
+            else
+                switchFragment(State.PARKING)
+            //   btnStartService.text = getString(R.string.service_stop)
         } else {
             tvServiceStatus.text = getString(R.string.service_unavailable)
             ivIconStatus.setImageDrawable(Helper.getDrawable(this, Items.UNAVAILABLE))
-            btnStartService.text=getString(R.string.service_start)
+            switchFragment(State.NO_SERVICE)
         }
 
         if (!Helper.checkPermissions(this)) {
@@ -103,20 +109,14 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
-        val clicked = intent.getBooleanExtra(EXTRA_PAY_BUTTON_CLICKED, false)
-        if (clicked){
-            Timber.d("Button Оплатить from Accessibility clicked")
-        }
     }
 
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
+        } else
             super.onBackPressed()
-        }
     }
 
     private fun requestPermissions() {
@@ -131,7 +131,7 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
                 return
             }
         }
-        Timber.d("request complete")
+        log("request complete")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -144,9 +144,12 @@ class StartActivity : MainView, BaseActivity(), NavigationView.OnNavigationItemS
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
