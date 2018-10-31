@@ -12,6 +12,7 @@ import com.v4n0v.memgan.parking.R
 import com.v4n0v.memgan.parking.mvp.views.StartParking
 import com.v4n0v.memgan.parking.utils.Helper
 import kotlinx.android.synthetic.main.fragment_parking.*
+import java.util.*
 
 
 class FragmentStartParking: BaseFragment(), StartParking{
@@ -27,13 +28,13 @@ class FragmentStartParking: BaseFragment(), StartParking{
         btnParking.setOnClickListener {
             val parkIntent = it.context.packageManager.getLaunchIntentForPackage(Helper.PACKAGE_NAME)
             if (parkIntent != null) {
-//                parkIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//                parkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//                val clickIntent = Intent(Helper.ACTION_PARKING_TIME)
-//                clickIntent.putExtra(Helper.EXTRA_IS_READY_TO_PARK, true)
-//                clickIntent.putExtra(Helper.EXIT_ID, UUID.randomUUID().toString())
+                parkIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                parkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                val clickIntent = Intent(Helper.ACTION_PARKING_TIME)
+                clickIntent.putExtra(Helper.EXTRA_IS_READY_TO_PARK, true)
+                clickIntent.putExtra(Helper.EXIT_ID, UUID.randomUUID().toString())
                 startActivity(parkIntent)
-//                it.context.applicationContext.sendStickyBroadcast(clickIntent)
+                it.context.applicationContext.sendStickyBroadcast(clickIntent)
             } else {
                 showInformDialog(getString(R.string.warning), getString(R.string.no_app_message), DialogInterface.OnClickListener { _, _ ->
                     val i = Intent(android.content.Intent.ACTION_VIEW);

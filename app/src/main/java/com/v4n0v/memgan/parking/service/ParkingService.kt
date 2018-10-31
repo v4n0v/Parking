@@ -1,22 +1,24 @@
 package com.v4n0v.memgan.parking.service
 
+import android.R.attr.colorForegroundInverse
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentFilter
-import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.v4n0v.memgan.parking.utils.Helper.ACTION_PARKING_TIME
-import com.v4n0v.memgan.parking.utils.Helper.BUTTON_PAY
 import com.v4n0v.memgan.parking.utils.Helper.EXIT_ID
 import com.v4n0v.memgan.parking.utils.Helper.EXTRA_IS_READY_TO_PARK
 import com.v4n0v.memgan.parking.utils.Helper.EXTRA_PAY_BUTTON_CLICKED
 import com.v4n0v.memgan.parking.utils.Helper.HOME_PACKAGE_NAME
 import com.v4n0v.memgan.parking.utils.Helper.PACKAGE_NAME
 import timber.log.Timber
-import java.util.*
+import android.os.Bundle
+import com.pawegio.kandroid.clipboardManager
+import android.R.attr.data
+import android.content.ClipData
+import java.lang.Thread.sleep
 
 
 // is clickable android.widget.Button text= ОПЛАТИТЬ ru.mos.parking.mobile:id/parking_park_pay
@@ -35,50 +37,121 @@ class ParkingService : AccessibilityService() {
     private val intentFilter = IntentFilter(ACTION_PARKING_TIME)
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        Timber.d("onAccessibilityEvent begin")
+        //  Timber.d("onAccessibilityEvent begin")
         val nodeInfo = event?.source ?: return
 
-        Timber.d("onAccessibilityEvent is clickable ${nodeInfo.className} text= ${nodeInfo.text} ${nodeInfo.viewIdResourceName}")
+        Timber.d("onAccessibilityEvent is clickable ${nodeInfo.className} text= ${nodeInfo.text} idRes = ${nodeInfo.viewIdResourceName}")
         val intent = applicationContext.registerReceiver(null, intentFilter)
                 ?: return
 
-        Timber.d("onAccessibilityEvent hasIntent $intent")
+//        Timber.d("onAccessibilityEvent hasIntent $intent")
 //        val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: return
 
         val itsTime = intent.getBooleanExtra(EXTRA_IS_READY_TO_PARK, false)
-        Timber.d("onAccessibilityEvent itsTime $itsTime, time to finish $timeToFinishId")
+//        Timber.d("onAccessibilityEvent itsTime $itsTime, time to finish $timeToFinishId")
         if (!itsTime) return
 
         val exitId = intent.getStringExtra(EXIT_ID)
         if (exitId.isEmpty())
             return
         val eventType = event.eventType
-        when (eventType) {
-            AccessibilityEvent.TYPE_VIEW_CLICKED -> {
-                logEvent(nodeInfo)
-                if (nodeInfo.viewIdResourceName == BUTTON_PAY) {
-                    Timber.d("onAccessibilityEvent pay button clicked")
-                    goBack()
-                }
-            }
+//         logEvent(nodeInfo)
 
-            AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
-            }
 
-        }
-
+//        if (nodeInfo.className=="android.widget.NumberPicker"){
+//            for (i in 0 until nodeInfo.childCount){
+//
+//                logEvent(nodeInfo.getChild(i))
+//            }
+//
+//        }
+//        when (eventType) {
+//            AccessibilityEvent.TYPE_VIEW_CLICKED -> {
+//                logEvent(nodeInfo)
+//                if (nodeInfo.viewIdResourceName == BUTTON_PAY) {
+//                    Timber.d("onAccessibilityEvent pay button clicked")
+//                    goBack()
+//                }
+//            }
+//
+//            AccessibilityEvent.TYPE_VIEW_FOCUSED -> {
+//            }
+//        }
+        Timber.d("onAccessibilityEvent $timeToFinishId != $exitId")
         if (timeToFinishId != exitId) {
-            Timber.d("onAccessibilityEvent $timeToFinishId != $exitId")
-            if (listenParkingClick(nodeInfo))
-                Timber.d("onAccessibilityEvent button clicked")
+            if (pasteParking(nodeInfo, "4444"))
+                if (handleParkClick(nodeInfo, exitId)) {
+                    sleep(500)
+//                    val newNodeInfo = event.source ?: return
+////                    if (nodeInfo.className=="android.widget.NumberPicker"){
+//                        for (i in 0 until newNodeInfo.childCount) {
+//                            logEvent(newNodeInfo.getChild(i))
+//                        }
+////                    }
+
+                }
+            Timber.d("onAccessibilityEvent job is done, Im awesome!")
+//            Timber.d("onAccessibilityEvent $timeToFinishId != $exitId")
+//            if (listenParkingClick(nodeInfo))
+//                Timber.d("onAccessibilityEvent button clicked")
         }
-//            if (handleParkClick(nodeInfo, exitId))
-//                Timber.d("onAccessibilityEvent job is done, Im awesome!")
+
+        if (nodeInfo.className == "android.widget.FrameLayout" && nodeInfo.actionList.size == 4 && nodeInfo.childCount == 1) {
+            //->Linear -> Frame ->Frame   ru.mos.parking.mobile:id/action_bar_root -> Frame android:id/content
+//            val n  = nodeInfo.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0)
+//             //logEvent(nodeInfo.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0))
+//            var i = 0
+//            while (i<n.childCount){
+//                logEvent(n.getChild(i))
+//                i++
+            val myNodes = HashMap<String, AccessibilityNodeInfo>()
+            showTree(nodeInfo, myNodes)
+            for (key in myNodes.keys) {
+                Timber.d("onAccessibilityEvent found node $key")
+            }
+
+            val hours = myNodes["NumberPicker1"]
+            Timber.d("onAccessibilityEvent actions ${hours?.actionList?.size}")
+
+            while (true) {
+                hours?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+                sleep(200)
+            }
+
+        }
+//
 
         interrupted = false
     }
 
-    private fun goBack(){
+
+    private fun showTree(nodeInfo: AccessibilityNodeInfo, nodes: HashMap<String, AccessibilityNodeInfo>) {
+        Timber.d("onAccessibilityEvent\n----------- next relative ----------- parent ${nodeInfo.className}----------")
+        for (i in 0 until nodeInfo.childCount) {
+            logEvent(nodeInfo.getChild(i))
+            if (nodeInfo.getChild(i).className == "android.widget.NumberPicker") { // && nodeInfo.getChild(i).getChild(1).viewIdResourceName == "android:id/numberpicker_input") {
+                Timber.d("onAccessibilityEvent  NumberPicker found!!!!")
+                nodes["NumberPicker$i"] = nodeInfo.getChild(i)
+//                while (true) {
+//                    nodeInfo.getChild(i).performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+//                    sleep(200)
+//                }
+//
+            }
+            if (nodeInfo.getChild(i).className == "android.widget.Button") {
+                if (nodeInfo.getChild(i).viewIdResourceName == "android:id/button2")
+                    nodes["CANCEL"] = nodeInfo.getChild(i)
+                if (nodeInfo.getChild(i).viewIdResourceName == "android:id/button2")
+                    nodes["READY"] = nodeInfo.getChild(i)
+            }
+        }
+        for (i in 0 until nodeInfo.childCount) {
+            showTree(nodeInfo.getChild(i), nodes)
+        }
+    }
+
+
+    private fun goBack() {
         val parkIntent = packageManager.getLaunchIntentForPackage(HOME_PACKAGE_NAME)
         if (parkIntent != null) {
             parkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -88,23 +161,43 @@ class ParkingService : AccessibilityService() {
     }
 
     private fun logEvent(nodeInfo: AccessibilityNodeInfo) {
-        Timber.d("onAccessibilityEvent\nClassName: ${nodeInfo.className} \nText: ${nodeInfo.text} \nViewIdResourceName: ${nodeInfo.viewIdResourceName}\nisClickable: ${nodeInfo.isClickable}")
+        Timber.d("onAccessibilityEvent\nClassName: ${nodeInfo.className} \nText: ${nodeInfo.text} \nViewIdResourceName: ${nodeInfo.viewIdResourceName}\nisClickable: ${nodeInfo.isClickable} \nActions: ${nodeInfo.actionList.size} \n" +
+                "Childs: ${nodeInfo.childCount}")
     }
 
-    override fun onKeyEvent(event: KeyEvent?): Boolean {
-//        return super.onKeyEvent(event)
+    private fun pasteParking(nodeInfo: AccessibilityNodeInfo, parkingnum: String): Boolean {
+        if (!interrupted) {
+            val editTextNodes = nodeInfo.findAccessibilityNodeInfosByViewId("ru.mos.parking.mobile:id/parking_parkId")
+                    ?: return false
+            Timber.d("onAccessibilityEvent edit text found")
+            //logEvent(editTextNodes[0])
+            editTextNodes.firstOrNull {
+                it.isClickable
+            }?.run {
+                Timber.d("onAccessibilityEvent start paste")
+                val arguments = Bundle()
+//                val clip = ClipData.newPlainText("park_number", parkingnum)
+//                clipboardManager.primaryClip = clip
+                arguments.putCharSequence(
+                        AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,
+                        parkingnum)
+                Timber.d("onAccessibilityEvent refresh")
+//                performAction(AccessibilityNodeInfo.ACTION_PASTE)
+                performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)
+                Timber.d("onAccessibilityEvent pasteComplete")
+                Timber.d("onAccessibilityEvent edittext = ${this.text}")
+                sleep(500)
+                return true
+            }
 
-        val action = event?.action
-        Timber.d("onKeyEvent action = ${action.toString()}")
-        event?.source
-
+        }
         return false
     }
 
     private fun listenParkingClick(nodeInfo: AccessibilityNodeInfo): Boolean {
         if (!interrupted) {
             val buttonNodes = nodeInfo.findAccessibilityNodeInfosByViewId("ru.mos.parking.mobile:id/parking_park_pay")
-            Timber.d("onAccessibilityEvent button found")
+            Timber.d("onAccessibilityEvent node found")
 
             buttonNodes.firstOrNull {
                 it.isClickable
@@ -124,11 +217,11 @@ class ParkingService : AccessibilityService() {
 //        if (!interrupted && textNodes.any { it.text.toString() == text }) {
         if (!interrupted) {
             val count = nodeInfo.childCount
-            Timber.d("onAccessibilityEvent child count is $count")
+//            Timber.d("onAccessibilityEvent child count is $count")
             var i = 0
             while (i < count) {
                 val child = nodeInfo.getChild(i)
-                Timber.d("onAccessibilityEvent child $i is ${child.isContextClickable}")
+//                Timber.d("onAccessibilityEvent child $i is ${child.isContextClickable}")
                 i++
             }
 //            val list = nodeInfo.for ((i, item) in list.withIndex()) {
