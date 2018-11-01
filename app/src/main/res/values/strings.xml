@@ -19,4 +19,8 @@
     <string name="warning">Внимание!</string>
     <string name="no_app_message">Приложение Московская порковка не установлено.\nНажмите Ок, чтобы перейти в на его страницу в Google Play</string>
     <string name="icon">Icon</string>
+    <string name="input_parking_place">Введите номер парковки</string>
+    <string name="hours">ч</string>
+    <string name="minutes">мин</string>
+    <string name="empty_perking">"Введите номер парковки</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.v4n0v.memgan.parking.utils
 
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
@@ -10,13 +9,15 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import com.v4n0v.memgan.parking.R
 import timber.log.Timber
-import java.util.*
 
 enum class Items { UNAVAILABLE, OK }
 
 object Helper {
     const val EXTRA_IS_READY_TO_PARK = "extra is ready to park"
     const val EXIT_ID = "exit id"
+    const val HOURS_ID = "hours id"
+    const val MINUTES_ID = "minutes id"
+    const val PARK_PLACE_ID = "PARK_PLACE_ID"
     const val ACTION_PARKING_TIME = "action parking time"
     const val PACKAGE_NAME = "ru.mos.parking.mobile"
     const val HOME_PACKAGE_NAME = "com.v4n0v.memgan.parking"

@@ -17,4 +17,16 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <style name="CounterStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+    </style>
+    <style name="EditTextHintStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+    <style name="EditTextErrorStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <!--<item name="colorControlNormal">@android:color/black</item>-->
+        <!--<item name="colorControlActivated">@color/colorPrimaryDark</item>-->
+    </style>
 </resources>

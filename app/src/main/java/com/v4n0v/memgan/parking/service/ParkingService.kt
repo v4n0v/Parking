@@ -18,6 +18,9 @@ import android.os.Bundle
 import com.pawegio.kandroid.clipboardManager
 import android.R.attr.data
 import android.content.ClipData
+import com.v4n0v.memgan.parking.utils.Helper.HOURS_ID
+import com.v4n0v.memgan.parking.utils.Helper.MINUTES_ID
+import com.v4n0v.memgan.parking.utils.Helper.PARK_PLACE_ID
 import java.lang.Thread.sleep
 
 
@@ -48,8 +51,16 @@ class ParkingService : AccessibilityService() {
 //        val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: return
 
         val itsTime = intent.getBooleanExtra(EXTRA_IS_READY_TO_PARK, false)
-//        Timber.d("onAccessibilityEvent itsTime $itsTime, time to finish $timeToFinishId")
         if (!itsTime) return
+
+        val hours = intent.getStringExtra(HOURS_ID) ?: return
+        val minutes = intent.getStringExtra(MINUTES_ID) ?: return
+        val parkingNum = intent.getStringExtra(PARK_PLACE_ID) ?: return
+
+        Timber.d("onAccessibilityEvent parking num: $parkingNum\nhours: $hours\nminutes: $minutes")
+
+//        Timber.d("onAccessibilityEvent itsTime $itsTime, time to finish $timeToFinishId")
+
 
         val exitId = intent.getStringExtra(EXIT_ID)
         if (exitId.isEmpty())
@@ -79,9 +90,10 @@ class ParkingService : AccessibilityService() {
 //        }
         Timber.d("onAccessibilityEvent $timeToFinishId != $exitId")
         if (timeToFinishId != exitId) {
-            if (pasteParking(nodeInfo, "4444"))
+            if (pasteParking(nodeInfo, parkingNum))
                 if (handleParkClick(nodeInfo, exitId)) {
                     sleep(500)
+                    Timber.d("onAccessibilityEvent job is done, Im awesome!")
 //                    val newNodeInfo = event.source ?: return
 ////                    if (nodeInfo.className=="android.widget.NumberPicker"){
 //                        for (i in 0 until newNodeInfo.childCount) {
@@ -90,47 +102,75 @@ class ParkingService : AccessibilityService() {
 ////                    }
 
                 }
-            Timber.d("onAccessibilityEvent job is done, Im awesome!")
+
 //            Timber.d("onAccessibilityEvent $timeToFinishId != $exitId")
 //            if (listenParkingClick(nodeInfo))
 //                Timber.d("onAccessibilityEvent button clicked")
         }
 
-        if (nodeInfo.className == "android.widget.FrameLayout" && nodeInfo.actionList.size == 4 && nodeInfo.childCount == 1) {
-            //->Linear -> Frame ->Frame   ru.mos.parking.mobile:id/action_bar_root -> Frame android:id/content
-//            val n  = nodeInfo.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0)
-//             //logEvent(nodeInfo.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0))
-//            var i = 0
-//            while (i<n.childCount){
-//                logEvent(n.getChild(i))
-//                i++
-            val myNodes = HashMap<String, AccessibilityNodeInfo>()
-            showTree(nodeInfo, myNodes)
-            for (key in myNodes.keys) {
-                Timber.d("onAccessibilityEvent found node $key")
-            }
-
-            val hours = myNodes["NumberPicker1"]
-            Timber.d("onAccessibilityEvent actions ${hours?.actionList?.size}")
-
-            while (true) {
-                hours?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
-                sleep(200)
-            }
-
-        }
+//        if (nodeInfo.className == "android.widget.FrameLayout" && nodeInfo.actionList.size == 4 && nodeInfo.childCount == 1) {
+//            //->Linear -> Frame ->Frame   ru.mos.parking.mobile:id/action_bar_root -> Frame android:id/content
+////            val n  = nodeInfo.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0)
+////             //logEvent(nodeInfo.getChild(0).getChild(0).getChild(0).getChild(0).getChild(0))
+////            var i = 0
+////            while (i<n.childCount){
+////                logEvent(n.getChild(i))
+////                i++
+//            val myNodes = HashMap<String, AccessibilityNodeInfo>()
+//            showTree(nodeInfo, myNodes)
+//            for (key in myNodes.keys) {
+//                Timber.d("onAccessibilityEvent found node $key")
+//            }
+//
+//            val hoursNode = myNodes["NumberPicker1"]
+//            Timber.d("onAccessibilityEvent actions ${hoursNode?.actionList?.size}")
+//            scrollNumPickerForResult(hoursNode!!, hours)
+////            while (true) {
+////                hoursNode?.refresh()
+////                Timber.d("onAccessibilityEvent hours${hoursNode?.getChild(1)?.text}")
+////                Timber.d("onAccessibilityEvent childs${hoursNode?.childCount}")
+////                if (showText(hoursNode!!) == hours)
+////                    break
+////                hoursNode.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+////                showTree(nodeInfo, myNodes)
+////                sleep(200)
+////            }
+//
+//        }
 //
 
         interrupted = false
     }
 
 
+    fun scrollNumPickerForResult(numPicker: AccessibilityNodeInfo, target: String): Boolean {
+        val txt = numPicker.getChild(1).text.toString()
+        Timber.d("onAccessibilityEvent $txt")
+        if (txt!= target) {
+            numPicker.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+            scrollNumPickerForResult(numPicker, target)
+        }
+        return true
+    }
+
+
+    private fun showText(numberNode: AccessibilityNodeInfo): String? {
+        for (i in 0 until numberNode.childCount) {
+            if (numberNode.getChild(i).className == "android.widget.EditText") {
+                Timber.d("onAccessibilityEvent EditText index is $i, text is ${numberNode.getChild(i).text}")
+                return numberNode.getChild(i).text.toString()
+            }
+        }
+        return null
+    }
+
+
     private fun showTree(nodeInfo: AccessibilityNodeInfo, nodes: HashMap<String, AccessibilityNodeInfo>) {
-        Timber.d("onAccessibilityEvent\n----------- next relative ----------- parent ${nodeInfo.className}----------")
+//        Timber.d("onAccessibilityEvent\n----------- next relative ----------- parent ${nodeInfo.className}----------")
         for (i in 0 until nodeInfo.childCount) {
             logEvent(nodeInfo.getChild(i))
             if (nodeInfo.getChild(i).className == "android.widget.NumberPicker") { // && nodeInfo.getChild(i).getChild(1).viewIdResourceName == "android:id/numberpicker_input") {
-                Timber.d("onAccessibilityEvent  NumberPicker found!!!!")
+//                Timber.d("onAccessibilityEvent  NumberPicker found!!!!")
                 nodes["NumberPicker$i"] = nodeInfo.getChild(i)
 //                while (true) {
 //                    nodeInfo.getChild(i).performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
@@ -138,6 +178,7 @@ class ParkingService : AccessibilityService() {
 //                }
 //
             }
+
             if (nodeInfo.getChild(i).className == "android.widget.Button") {
                 if (nodeInfo.getChild(i).viewIdResourceName == "android:id/button2")
                     nodes["CANCEL"] = nodeInfo.getChild(i)
