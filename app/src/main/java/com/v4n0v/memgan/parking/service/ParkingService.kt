@@ -83,19 +83,20 @@ class ParkingService : AccessibilityService() {
         }
 
         val myNodes = HashMap<String, AccessibilityNodeInfo>()
-        getDialog(rootInActiveWindow, myNodes)
-        getButtons(rootInActiveWindow, myNodes)
+       val dialog =  getDialog(rootInActiveWindow, myNodes)
+        val buttonBar = getButtons(rootInActiveWindow, myNodes)
         if (myNodes.size > 0) {
-           // logViewHierarchy(rootInActiveWindow, 0)
+            // logViewHierarchy(rootInActiveWindow, 0)
             for (key in myNodes.keys)
                 Timber.d("onAccessibilityEvent found node $key")
             val hoursNode = myNodes["NumberPicker1"] ?: return
             val minutesNode = myNodes["NumberPicker2"] ?: return
-            val doneButtonNode = myNodes["Button0"] ?: return
+            val doneButtonNode = myNodes["Button1"] ?: return
 
             if (finishHoursId != exitHoursId)
                 handleNumberPicker(hoursNode, hours) {
                     finishHoursId = exitHoursId
+
                 }
             if (finishMinutesId != exitMinutesId)
                 handleNumberPicker(minutesNode, minutes) {
@@ -104,6 +105,8 @@ class ParkingService : AccessibilityService() {
             if (finishMinutesId == exitMinutesId && finishHoursId == exitHoursId && finihExitDialogId != exitHoursId)
                 handleButtonDone(doneButtonNode) {
                     finihExitDialogId = exitMinutesId
+                    dialog?.forEach { it.recycle() }
+                    buttonBar?.forEach { it.recycle() }
                 }
         }
         interrupted = false
@@ -146,7 +149,6 @@ class ParkingService : AccessibilityService() {
     }
 
 
-
     private fun goBack() {
         val parkIntent = packageManager.getLaunchIntentForPackage(HOME_PACKAGE_NAME)
         if (parkIntent != null) {
@@ -157,8 +159,8 @@ class ParkingService : AccessibilityService() {
     }
 
 
-    private fun getButtons(nodeInfo: AccessibilityNodeInfo?, nodes: HashMap<String, AccessibilityNodeInfo>): Boolean {
-        nodeInfo ?: return false
+    private fun getButtons(nodeInfo: AccessibilityNodeInfo?, nodes: HashMap<String, AccessibilityNodeInfo>): List<AccessibilityNodeInfo>? {
+        nodeInfo ?: return null
         if (!interrupted) {
             val dialgNodes = nodeInfo.findAccessibilityNodeInfosByViewId(BUTTON_BAR_ID)
 
@@ -167,15 +169,15 @@ class ParkingService : AccessibilityService() {
                     Timber.d("onAccessibilityEvent buttonBafFound, root is  ${dialgNodes[0].className}")
                     initDialogButtonsBar(dialgNodes[0], 0, nodes)
                     Timber.d("onAccessibilityEvent buttonBar found, childs = ${dialgNodes[0].childCount}")
-                    return true
+                    return dialgNodes
                 }
 
         }
-        return false
+        return null
     }
 
-    private fun getDialog(nodeInfo: AccessibilityNodeInfo?, nodes: HashMap<String, AccessibilityNodeInfo>): Boolean {
-        nodeInfo ?: return false
+    private fun getDialog(nodeInfo: AccessibilityNodeInfo?, nodes: HashMap<String, AccessibilityNodeInfo>): List<AccessibilityNodeInfo>? {
+        nodeInfo ?: return null
         var success = false
         if (!interrupted) {
             val dialgNodes = nodeInfo.findAccessibilityNodeInfosByViewId(NUMBER_PICKERS_ID)
@@ -183,10 +185,10 @@ class ParkingService : AccessibilityService() {
                 if (dialgNodes.size != 0) {
                     initDialogInputTime(dialgNodes[0], 0, nodes)
                     Timber.d("onAccessibilityEvent dialog found, childs = ${dialgNodes[0].childCount}")
-                    success = true
+                    return dialgNodes
                 }
         }
-        return success
+        return null
     }
 
     private fun pasteParking(nodeInfo: AccessibilityNodeInfo, parkingnum: String): Boolean {
