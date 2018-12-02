@@ -1,5 +1,6 @@
 package com.v4n0v.memgan.parking.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -9,12 +10,20 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import com.v4n0v.memgan.parking.R
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 enum class Items { UNAVAILABLE, OK }
 
 object Helper {
+    const val SECOND = 1000
+    const val MINUTE = 60 * SECOND
+
+//    const val TIMER = 10* SECOND
+    const val TIMER = 14* MINUTE+55* SECOND
     const val EXTRA_IS_READY_TO_PARK = "extra is ready to park"
     const val EXIT_ID = "exit id"
+    const val EXIT_HOURS_ID = "exit hours id"
     const val HOURS_ID = "hours id"
     const val MINUTES_ID = "minutes id"
     const val PARK_PLACE_ID = "PARK_PLACE_ID"
@@ -23,6 +32,9 @@ object Helper {
     const val HOME_PACKAGE_NAME = "com.v4n0v.memgan.parking"
     const val BUTTON_PAY = "ru.mos.parking.mobile:id/parking_park_pay"
     const val EXTRA_PAY_BUTTON_CLICKED = "pay button clicked"
+
+    @SuppressLint("ConstantLocale")
+    val timerFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
 
     fun checkPermissions(context: Context): Boolean {
         with(context) {

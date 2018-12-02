@@ -16,13 +16,10 @@ class StartParkingPresenter(private val hours:String, val minutes: String) : Mvp
     }
 
     private fun init(){
-        for (i in 0 until 13){
+        for (i in 0 until 13)
             hoursList.add("$i $hours")
-        }
-
-        for (i in 0 until 60 step 5){
+        for (i in 0 until 60 step 5)
             minutesList.add("$i $minutes")
-        }
 
         viewState.init(hoursList.toTypedArray(), minutesList.toTypedArray())
     }

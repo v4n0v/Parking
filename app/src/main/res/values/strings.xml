@@ -22,5 +22,9 @@
     <string name="input_parking_place">Введите номер парковки</string>
     <string name="hours">ч</string>
     <string name="minutes">мин</string>
-    <string name="empty_perking">"Введите номер парковки</string>
+    <string name="empty_perking">введите номер парковки</string>
+    <string name="button_done">готово</string>
+    <string name="button_cancel">Отмена</string>
+    <string name="title_activity_launch">LaunchActivity</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
