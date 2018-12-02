@@ -10,13 +10,15 @@ import timber.log.Timber
 
 open class BaseActivity:MvpAppCompatActivity(){
 
-
     fun log(msg:String){
         Timber.d(msg)
     }
 
     fun toast(msg:String){
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+    fun toastLong(msg:String){
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
     }
 
     fun showInformDialog(title:String, message: String, onClickListener: DialogInterface.OnClickListener) {

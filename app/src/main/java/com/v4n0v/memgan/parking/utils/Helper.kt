@@ -16,11 +16,11 @@ import java.util.*
 enum class Items { UNAVAILABLE, OK }
 
 object Helper {
-    const val SECOND = 1000
-    const val MINUTE = 60 * SECOND
+    const val SECOND:Long = 1000
+    const val MINUTE:Long = 60 * SECOND
 
 //    const val TIMER = 10* SECOND
-    const val TIMER = 14* MINUTE+55* SECOND
+    const val TIMER:Long = 14* MINUTE+55* SECOND
     const val EXTRA_IS_READY_TO_PARK = "extra is ready to park"
     const val EXIT_ID = "exit id"
     const val EXIT_HOURS_ID = "exit hours id"

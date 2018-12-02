@@ -53,12 +53,11 @@ class FragmentStartParking : BaseFragment(), StartParking {
         minutesPicker.maxValue = minutes.size - 1
 
         val prefs = context?.getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
-        val time = prefs?.getInt("time", Helper.TIMER)
-        tvTimeCount.text = "Парковка через: ${Helper.timerFormat.format(time?.toLong())}"
-        //todo УДОЛИ
-        etParkingPlace.setText("4444")
-        hoursPicker.value = 6
-        minutesPicker.value = 6
+        tvTimeCount.text = "Парковка через: ${Helper.timerFormat.format(prefs?.getLong("time", Helper.TIMER))}"
+//        //todo УДОЛИ
+//        etParkingPlace.setText("4444")
+//        hoursPicker.value = 6
+//        minutesPicker.value = 6
 
         btnParking.setOnClickListener {
             if (etParkingPlace.text.isEmpty() || etParkingPlace.text.toString().length != 4) {
@@ -68,6 +67,8 @@ class FragmentStartParking : BaseFragment(), StartParking {
             presenter.parkMe(hoursPicker.value, minutesPicker.value)
         }
     }
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_parking, container, false)

@@ -6,13 +6,16 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.v4n0v.memgan.parking.R
 import com.v4n0v.memgan.parking.activities.LaunchActivity
+import com.v4n0v.memgan.parking.activities.PREFS_TIME
 import com.v4n0v.memgan.parking.mvp.presenters.TimerPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
 import com.v4n0v.memgan.parking.mvp.views.TimerView
+import com.v4n0v.memgan.parking.utils.Helper
 import com.v4n0v.memgan.parking.utils.Helper.TIMER
 import com.v4n0v.memgan.parking.utils.Helper.timerFormat
 import kotlinx.android.synthetic.main.fragment_timer.*
@@ -42,14 +45,17 @@ class FragmentTimer : BaseFragment(), TimerView {
     }
 
     override fun init() {
-        timer = object : CountDownTimer(TIMER.toLong(), 1000) {
+        val prefs = context?.getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
+        val taskTime = (prefs?.getLong("time", Helper.TIMER)) ?:Helper.TIMER
+
+        timer = object : CountDownTimer(taskTime, 1000) {
             override fun onFinish() {
                 activity.startParking()
             }
 
             override fun onTick(millisUntilFinished: Long) {
                 tvTimer.text = timerFormat.format(millisUntilFinished)
-                progressBar.progress = 100 - millisUntilFinished.toInt() * 100 / TIMER
+                progressBar.progress = 100 - millisUntilFinished.toInt() * 100 / taskTime.toInt()
             }
         }
         btnCancel.setOnClickListener {

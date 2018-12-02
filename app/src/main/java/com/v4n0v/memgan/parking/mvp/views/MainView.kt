@@ -13,4 +13,5 @@ interface MainView : MvpView {
     fun initIntent(clickIntent: Intent, parkIntent: Intent)
     fun startParking()
     fun switchFragment(state: LaunchActivity.State)
+
 }
