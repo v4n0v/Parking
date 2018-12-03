@@ -18,7 +18,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.v4n0v.memgan.parking.R
 import com.v4n0v.memgan.parking.fragments.FragmentNoService
-import com.v4n0v.memgan.parking.fragments.FragmentSetDuration
 import com.v4n0v.memgan.parking.fragments.FragmentStartParking
 import com.v4n0v.memgan.parking.fragments.FragmentTimer
 import com.v4n0v.memgan.parking.mvp.BaseActivity
@@ -37,12 +36,14 @@ import com.v4n0v.memgan.parking.utils.Helper.timerFormat
 
 private const val PERMISSION_FOR_ALL_REQUEST_CODE = 1654
 const val PREFS_TIME = "prefs"
-private const val SETTINGS_TIME = "time"
+
 
 class LaunchActivity : MainView, BaseActivity() {
+    companion object {
+        const val SETTINGS_TIME = "time"
+    }
 
-
-    enum class State { NO_SERVICE, PARKING, DURATION, TIMER }
+    enum class State { NO_SERVICE, PARKING, TIMER }
 
 
     var currentState = State.NO_SERVICE
@@ -109,10 +110,8 @@ class LaunchActivity : MainView, BaseActivity() {
     }
 
     override fun switchFragment(state: State) {
-
         when (state) {
             State.TIMER -> beginTransaction(FragmentTimer())
-            State.DURATION -> beginTransaction(FragmentSetDuration())
             State.PARKING -> beginTransaction(FragmentStartParking())
             State.NO_SERVICE -> beginTransaction(FragmentNoService())
         }
@@ -123,26 +122,22 @@ class LaunchActivity : MainView, BaseActivity() {
         if (Helper.checkAccessibilityService(this)) {
             tvServiceStatus.text = getString(R.string.service_Ok)
             ivIconStatus.setImageDrawable(Helper.getDrawable(this, Items.OK))
-            val clicked = intent.getBooleanExtra(Helper.EXTRA_PAY_BUTTON_CLICKED, false)
-            if (clicked)
-                switchFragment(State.DURATION)
-            else
-                switchFragment(State.PARKING)
+            switchFragment(State.PARKING)
         } else {
             tvServiceStatus.text = getString(R.string.service_unavailable)
             ivIconStatus.setImageDrawable(Helper.getDrawable(this, Items.UNAVAILABLE))
             switchFragment(State.NO_SERVICE)
         }
 
-        if (!Helper.checkPermissions(this)) {
+        if (!Helper.checkPermissions(this))
             requestPermissions()
-        }
+
     }
 
     override fun saveTimePreferences(time: Long) {
         val sp = getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
         val e = sp.edit()
-        e.putLong("time", time)
+        e.putLong(SETTINGS_TIME, time)
         e.apply()
     }
 
@@ -156,7 +151,7 @@ class LaunchActivity : MainView, BaseActivity() {
 
 
         val prefs = getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
-        val time = prefs?.getLong("time", Helper.TIMER)
+        val time = prefs?.getLong(SETTINGS_TIME, Helper.TIMER)
         var currentTime = 0L
         val timeTv = TextView(this)
         timeTv.textSize = 80f

@@ -22,9 +22,6 @@ import com.v4n0v.memgan.parking.utils.Helper.MINUTES_ID
 import com.v4n0v.memgan.parking.utils.Helper.PARK_PLACE_ID
 import java.lang.Thread.sleep
 
-
-// is clickable android.widget.Button text= ОПЛАТИТЬ ru.mos.parking.mobile:id/parking_park_pay
-//is clickable   android.widget.EditText text= Номер парковки / билета ru.mos.parking.mobile:id/parking_parkId
 class ParkingService : AccessibilityService() {
     override fun onInterrupt() {
         interrupted = true
@@ -38,8 +35,12 @@ class ParkingService : AccessibilityService() {
         private var finihExitDialogId = ""
         private var FRAME_ID = "custom"
 
+        private var PARKING_ID = "ru.mos.parking.mobile:id/parking_parkId"
         private var BUTTON_BAR_ID = "ru.mos.parking.mobile:id/buttonPanel"
         private var NUMBER_PICKERS_ID = "ru.mos.parking.mobile:id/custom"
+        private var PAY_ID = "ru.mos.parking.mobile:id/parking_park_pay"
+        private var NUMBER_PICKER_WIDGET = "NumberPicker"
+        private var BUTON_WIDGET = "Button"
 
     }
 
@@ -74,17 +75,15 @@ class ParkingService : AccessibilityService() {
         if (exitMinutesId.isEmpty())
             return
 
-        if (finishPayId != exitId) {
+        if (finishPayId != exitId)
             if (pasteParking(nodeInfo, parkingNum))
-                if (handleParkClick(nodeInfo, exitId)) {
-                    Timber.d("onAccessibilityEvent pay clicked, dialog opened")
+                if (handleParkClick(nodeInfo, exitId))
                     setSuccess(exitId)
-                }
-        }
+
 
         val myNodes = HashMap<String, AccessibilityNodeInfo>()
-       val dialog =  getDialog(rootInActiveWindow, myNodes)
-        val buttonBar = getButtons(rootInActiveWindow, myNodes)
+        val dialog = getViewsById(NUMBER_PICKERS_ID, NUMBER_PICKER_WIDGET, rootInActiveWindow, myNodes)
+        val buttonBar = getViewsById(BUTTON_BAR_ID, BUTON_WIDGET, rootInActiveWindow, myNodes)
         if (myNodes.size > 0) {
             // logViewHierarchy(rootInActiveWindow, 0)
             for (key in myNodes.keys)
@@ -96,7 +95,6 @@ class ParkingService : AccessibilityService() {
             if (finishHoursId != exitHoursId)
                 handleNumberPicker(hoursNode, hours) {
                     finishHoursId = exitHoursId
-
                 }
             if (finishMinutesId != exitMinutesId)
                 handleNumberPicker(minutesNode, minutes) {
@@ -114,8 +112,6 @@ class ParkingService : AccessibilityService() {
 
 
     private fun handleButtonDone(node: AccessibilityNodeInfo, action: () -> Unit) {
-        Timber.d("onAccessibilityEvent button: ${node.text}")
-
         if (node.isClickable) {
             node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
             action()
@@ -124,13 +120,10 @@ class ParkingService : AccessibilityService() {
 
     private fun handleNumberPicker(node: AccessibilityNodeInfo, target: String, action: () -> Unit) {
         val hoursPickerText = node.getChild(1)?.text.toString()
-        Timber.d("onAccessibilityEvent hours: $hoursPickerText ? $target")
         if (hoursPickerText != target) {
-            Timber.d("onAccessibilityEvent start scroll")
             node.performAction(ACTION_SCROLL_FORWARD)
             sleep(50)
         } else {
-            Timber.d("onAccessibilityEvent hours are the same")
             action()
         }
     }
@@ -141,7 +134,6 @@ class ParkingService : AccessibilityService() {
         for (i in 0 until depth) {
             spacerString += '-'.toString()
         }
-        Timber.d("onAccessibilityEvent " + spacerString + nodeInfo.className + " " + nodeInfo.viewIdResourceName)
 
         for (i in 0 until nodeInfo.childCount) {
             logViewHierarchy(nodeInfo.getChild(i), depth + 1)
@@ -158,33 +150,14 @@ class ParkingService : AccessibilityService() {
         }
     }
 
-
-    private fun getButtons(nodeInfo: AccessibilityNodeInfo?, nodes: HashMap<String, AccessibilityNodeInfo>): List<AccessibilityNodeInfo>? {
+    private fun getViewsById(id: String, wiget: String, nodeInfo: AccessibilityNodeInfo?, nodes: HashMap<String, AccessibilityNodeInfo>): List<AccessibilityNodeInfo>? {
         nodeInfo ?: return null
         if (!interrupted) {
-            val dialgNodes = nodeInfo.findAccessibilityNodeInfosByViewId(BUTTON_BAR_ID)
+            val dialgNodes = nodeInfo.findAccessibilityNodeInfosByViewId(id)
 
             if (dialgNodes != null)
                 if (dialgNodes.size != 0) {
-                    Timber.d("onAccessibilityEvent buttonBafFound, root is  ${dialgNodes[0].className}")
-                    initDialogButtonsBar(dialgNodes[0], 0, nodes)
-                    Timber.d("onAccessibilityEvent buttonBar found, childs = ${dialgNodes[0].childCount}")
-                    return dialgNodes
-                }
-
-        }
-        return null
-    }
-
-    private fun getDialog(nodeInfo: AccessibilityNodeInfo?, nodes: HashMap<String, AccessibilityNodeInfo>): List<AccessibilityNodeInfo>? {
-        nodeInfo ?: return null
-        var success = false
-        if (!interrupted) {
-            val dialgNodes = nodeInfo.findAccessibilityNodeInfosByViewId(NUMBER_PICKERS_ID)
-            if (dialgNodes != null)
-                if (dialgNodes.size != 0) {
-                    initDialogInputTime(dialgNodes[0], 0, nodes)
-                    Timber.d("onAccessibilityEvent dialog found, childs = ${dialgNodes[0].childCount}")
+                    initView(wiget, dialgNodes[0], 0, nodes)
                     return dialgNodes
                 }
         }
@@ -194,7 +167,7 @@ class ParkingService : AccessibilityService() {
     private fun pasteParking(nodeInfo: AccessibilityNodeInfo, parkingnum: String): Boolean {
         var success = false
         if (!interrupted) {
-            val editTextNodes = nodeInfo.findAccessibilityNodeInfosByViewId("ru.mos.parking.mobile:id/parking_parkId")
+            val editTextNodes = nodeInfo.findAccessibilityNodeInfosByViewId(PARKING_ID)
                     ?: return false
             Timber.d("onAccessibilityEvent edit text found")
             editTextNodes.firstOrNull {
@@ -218,55 +191,19 @@ class ParkingService : AccessibilityService() {
         return success
     }
 
-    private fun listenParkingClick(nodeInfo: AccessibilityNodeInfo): Boolean {
-        var success = false
-        if (!interrupted) {
-            val buttonNodes = nodeInfo.findAccessibilityNodeInfosByViewId("ru.mos.parking.mobile:id/parking_park_pay")
-            Timber.d("onAccessibilityEvent node found")
-            nodeInfo.findAccessibilityNodeInfosByText("NumberPicker")
-            buttonNodes.firstOrNull {
-                it.isClickable
-            }?.run {
-                if (this.isSelected) {
-                    Timber.d("onAccessibilityEvent button is selected")
-                    success = true
-                }
-            }
-
-
-            buttonNodes.forEach { it.recycle() }
-        }
-        return success
-    }
-
-    private fun initDialogButtonsBar(nodeInfo: AccessibilityNodeInfo?, depth: Int, nodes: HashMap<String, AccessibilityNodeInfo>) {
+    private fun initView(widget: String, nodeInfo: AccessibilityNodeInfo?, depth: Int, nodes: HashMap<String, AccessibilityNodeInfo>) {
         if (nodeInfo == null) return
         for (i in 0 until nodeInfo.childCount) {
-            if (nodeInfo.getChild(i).className == "android.widget.Button")
-                nodes["Button$i"] = nodeInfo.getChild(i)
-            initDialogButtonsBar(nodeInfo.getChild(i), depth + 1, nodes);
+            if (nodeInfo.getChild(i).className == "android.widget.$widget")
+                nodes["$widget$i"] = nodeInfo.getChild(i)
+            initView(widget, nodeInfo.getChild(i), depth + 1, nodes);
         }
     }
-
-    private fun initDialogInputTime(nodeInfo: AccessibilityNodeInfo?, depth: Int, nodes: HashMap<String, AccessibilityNodeInfo>) {
-        if (nodeInfo == null) return;
-        var spacerString = ""
-        for (i in 0 until depth) {
-            spacerString += '-';
-        }
-
-        for (i in 0 until nodeInfo.childCount) {
-            if (nodeInfo.getChild(i).className == "android.widget.NumberPicker")
-                nodes["NumberPicker$i"] = nodeInfo.getChild(i)
-            initDialogInputTime(nodeInfo.getChild(i), depth + 1, nodes);
-        }
-    }
-
 
     private fun handleParkClick(nodeInfo: AccessibilityNodeInfo, exitId: String): Boolean {
         var success = false
         if (!interrupted) {
-            val buttonNodes = nodeInfo.findAccessibilityNodeInfosByViewId("ru.mos.parking.mobile:id/parking_park_pay")
+            val buttonNodes = nodeInfo.findAccessibilityNodeInfosByViewId(PAY_ID)
             buttonNodes.firstOrNull {
                 it.isClickable
             }?.run {

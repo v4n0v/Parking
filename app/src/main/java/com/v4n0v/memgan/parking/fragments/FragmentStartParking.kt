@@ -14,6 +14,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.v4n0v.memgan.parking.R
 import com.v4n0v.memgan.parking.activities.LaunchActivity
+import com.v4n0v.memgan.parking.activities.LaunchActivity.Companion.SETTINGS_TIME
 import com.v4n0v.memgan.parking.activities.PREFS_TIME
 import com.v4n0v.memgan.parking.mvp.presenters.StartParkingPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
@@ -53,7 +54,7 @@ class FragmentStartParking : BaseFragment(), StartParking {
         minutesPicker.maxValue = minutes.size - 1
 
         val prefs = context?.getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
-        tvTimeCount.text = "Парковка через: ${Helper.timerFormat.format(prefs?.getLong("time", Helper.TIMER))}"
+        tvTimeCount.text = "Парковка через: ${Helper.timerFormat.format(prefs?.getLong(SETTINGS_TIME, Helper.TIMER))}"
 //        //todo УДОЛИ
 //        etParkingPlace.setText("4444")
 //        hoursPicker.value = 6
