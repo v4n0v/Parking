@@ -8,5 +8,5 @@
     <color name="colorParkingBlue">#005ca1</color>
     <color name="colorParkingBluePressed">#0b4876</color>
     <color name="white">#FFFFFF</color>
-
+    <color name="ic_launcher_background">#0366b4</color>
 </resources>

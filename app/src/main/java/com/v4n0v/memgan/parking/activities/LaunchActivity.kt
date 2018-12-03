@@ -9,11 +9,9 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.LinearLayout
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -27,16 +25,14 @@ import com.v4n0v.memgan.parking.mvp.BaseActivity
 import com.v4n0v.memgan.parking.mvp.presenters.MainPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
 import com.v4n0v.memgan.parking.utils.Helper
-import com.v4n0v.memgan.parking.utils.Helper.MINUTE
-import com.v4n0v.memgan.parking.utils.Helper.SECOND
 import com.v4n0v.memgan.parking.utils.Items
 import kotlinx.android.synthetic.main.activity_launch.*
 import kotlinx.android.synthetic.main.content_launch.*
-import javax.xml.datatype.DatatypeConstants.MINUTES
-import android.R.id.edit
-import android.content.SharedPreferences.Editor
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.Gravity
+import android.widget.SeekBar
+import android.widget.TextView
+import com.v4n0v.memgan.parking.utils.Helper.TIMER
+import com.v4n0v.memgan.parking.utils.Helper.timerFormat
 
 
 private const val PERMISSION_FOR_ALL_REQUEST_CODE = 1654
@@ -143,6 +139,13 @@ class LaunchActivity : MainView, BaseActivity() {
         }
     }
 
+    override fun saveTimePreferences(time: Long) {
+        val sp = getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
+        val e = sp.edit()
+        e.putLong("time", time)
+        e.apply()
+    }
+
     private fun showTimeDialog() {
         val builder = AlertDialog.Builder(this)
 
@@ -150,33 +153,43 @@ class LaunchActivity : MainView, BaseActivity() {
         val ll = LinearLayout(this)
         ll.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         ll.orientation = LinearLayout.VERTICAL
-        val inputMins = EditText(this)
-        val inputSecs = EditText(this)
 
-        val etParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-        etParams.setMargins(20, 10, 20, 10)
-        inputMins.inputType = InputType.TYPE_CLASS_NUMBER
-        inputMins.layoutParams = etParams
-        inputSecs.layoutParams = etParams
-        inputSecs.inputType = InputType.TYPE_CLASS_NUMBER
-        inputMins.hint = "Минут"
-        inputSecs.hint = "Cекунд"
-        ll.addView(inputMins)
-        ll.addView(inputSecs)
+
+        val prefs = getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
+        val time = prefs?.getLong("time", Helper.TIMER)
+        var currentTime = 0L
+        val timeTv = TextView(this)
+        timeTv.textSize = 80f
+        timeTv.gravity = Gravity.CENTER
+        timeTv.text = timerFormat.format(time)
+        val seek = SeekBar(this)
+
+        seek.max = TIMER.toInt()
+        seek.progress = time?.toInt() ?: Helper.TIMER.toInt()
+
+
+        seek.incrementProgressBy(5000)
+        seek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                timeTv.text = timerFormat.format(progress)
+                currentTime = progress.toLong()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        ll.addView(timeTv)
+        ll.addView(seek)
         builder.setView(ll)
         builder.setPositiveButton(resources.getString(R.string.button_done)
         ) { _, _ ->
-            val mins = inputMins.text.toString().toLong()
-            val secs = inputSecs.text.toString().toLong()
-            val total = mins * MINUTE + secs * SECOND
-            val sp = getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
-            val e = sp.edit()
-            e.putLong("time", total)
-            e.apply()
+            saveTimePreferences(currentTime)
             switchFragment(State.PARKING)
         }
         builder.show()
     }
+
 
     private fun requestPermissions() {
         val requiredPermissionsFromManifest = Helper.getNotRequestedPermissions(this)
