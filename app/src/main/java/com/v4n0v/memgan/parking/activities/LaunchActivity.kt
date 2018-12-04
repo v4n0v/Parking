@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -28,8 +27,7 @@ import com.v4n0v.memgan.parking.utils.Items
 import kotlinx.android.synthetic.main.activity_launch.*
 import kotlinx.android.synthetic.main.content_launch.*
 import android.view.Gravity
-import android.widget.SeekBar
-import android.widget.TextView
+import android.widget.*
 import com.v4n0v.memgan.parking.utils.Helper.TIMER
 import com.v4n0v.memgan.parking.utils.Helper.timerFormat
 
@@ -73,7 +71,12 @@ class LaunchActivity : MainView, BaseActivity() {
 
     @SuppressLint("SetTextI18n")
     override fun initialiaze() {
-        ivIconStatus.setOnClickListener { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+//        switchStatus.setOnClickListener { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+
+        switchStatus.setOnCheckedChangeListener { _, _ ->
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        }
+
 
     }
 
@@ -121,11 +124,11 @@ class LaunchActivity : MainView, BaseActivity() {
     override fun checkState() {
         if (Helper.checkAccessibilityService(this)) {
             tvServiceStatus.text = getString(R.string.service_Ok)
-            ivIconStatus.setImageDrawable(Helper.getDrawable(this, Items.OK))
+            switchStatus.isChecked = true
             switchFragment(State.PARKING)
         } else {
             tvServiceStatus.text = getString(R.string.service_unavailable)
-            ivIconStatus.setImageDrawable(Helper.getDrawable(this, Items.UNAVAILABLE))
+            switchStatus.isChecked = false
             switchFragment(State.NO_SERVICE)
         }
 

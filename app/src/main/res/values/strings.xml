@@ -29,4 +29,7 @@
     <string name="button_cancel">Отмена</string>
     <string name="title_activity_launch">LaunchActivity</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="noServMessageStart">Приложением новозможно пользоваться, пока не будет запущен сервис "%s"\nВам необходимо предоставить права на получение информации с экрана вашего Android устройства, для того, что бы %s имело возможность управлять приложением Московская парковка </string>
+    <string name="noServMessageEnd"> </string>
+    <string name="turnOn">Отключено</string>
 </resources>

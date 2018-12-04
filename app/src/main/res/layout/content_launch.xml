@@ -14,13 +14,13 @@
         android:layout_marginEnd="8dp"
         android:textSize="@dimen/text"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/ivIconStatus"
-        app:layout_constraintEnd_toStartOf="@+id/ivIconStatus"
-        app:layout_constraintTop_toTopOf="@+id/ivIconStatus"
+        app:layout_constraintBottom_toBottomOf="@+id/switchStatus"
+        app:layout_constraintEnd_toStartOf="@+id/switchStatus"
+        app:layout_constraintTop_toTopOf="@+id/switchStatus"
         tools:text="@string/service_unavailable" />
 
-    <ImageView
-        android:id="@+id/ivIconStatus"
+    <Switch
+        android:id="@+id/switchStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -28,7 +28,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_do_not_disturb" />
+       />
 
     <FrameLayout
         android:id="@+id/fragmentContainer"
