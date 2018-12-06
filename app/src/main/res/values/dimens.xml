@@ -12,4 +12,8 @@
     <dimen name="std_margin">8dp</dimen>
     <dimen name="size_32dp">32dp</dimen>
     <dimen name="size_16dp">16dp</dimen>
+    <dimen name="margin_8dp">8dp</dimen>
+    <dimen name="size_2dp">2dp</dimen>
+    <dimen name="size_5dp">5dp</dimen>
+    <dimen name="fab_park_size">65dp</dimen>
 </resources>

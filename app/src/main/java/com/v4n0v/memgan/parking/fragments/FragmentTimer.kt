@@ -58,7 +58,7 @@ class FragmentTimer : BaseFragment(), TimerView {
                 progressBar.progress = 100 - millisUntilFinished.toInt() * 100 / taskTime.toInt()
             }
         }
-        btnCancel.setOnClickListener {
+        fabCancel.setOnClickListener {
             timer?.cancel()
             activity.switchFragment(LaunchActivity.State.PARKING)
         }

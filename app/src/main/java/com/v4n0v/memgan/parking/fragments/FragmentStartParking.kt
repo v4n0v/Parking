@@ -60,9 +60,14 @@ class FragmentStartParking : BaseFragment(), StartParking {
 //        hoursPicker.value = 6
 //        minutesPicker.value = 6
 
-        btnParking.setOnClickListener {
-            if (etParkingPlace.text.isEmpty() || etParkingPlace.text.toString().length != 4) {
+        fab.setOnClickListener {
+            if (etParkingPlace.text.isEmpty() || etParkingPlace.text.toString().length != 4 ) {
                 toast(getString(R.string.empty_perking))
+                return@setOnClickListener
+            }
+
+            if ( minutesPicker.value == 0 && hoursPicker.value==0){
+                toast(getString(R.string.empty_time))
                 return@setOnClickListener
             }
             presenter.parkMe(hoursPicker.value, minutesPicker.value)
