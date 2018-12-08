@@ -6,6 +6,7 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationSet
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -15,9 +16,11 @@ import com.v4n0v.memgan.parking.activities.PREFS_TIME
 import com.v4n0v.memgan.parking.mvp.presenters.TimerPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
 import com.v4n0v.memgan.parking.mvp.views.TimerView
+import com.v4n0v.memgan.parking.utils.Animator
 import com.v4n0v.memgan.parking.utils.Helper
 import com.v4n0v.memgan.parking.utils.Helper.TIMER
 import com.v4n0v.memgan.parking.utils.Helper.timerFormat
+import kotlinx.android.synthetic.main.fragment_parking.*
 import kotlinx.android.synthetic.main.fragment_timer.*
 
 class FragmentTimer : BaseFragment(), TimerView {
@@ -62,7 +65,10 @@ class FragmentTimer : BaseFragment(), TimerView {
             timer?.cancel()
             activity.switchFragment(LaunchActivity.State.PARKING)
         }
-
+        val showAnimationSet = AnimationSet(false)
+        showAnimationSet.addAnimation(Animator.showScaleAnimation())
+        showAnimationSet.addAnimation(Animator.toNormalScaleAnimation())
+        fabCancel.startAnimation(showAnimationSet)
         timer?.start()
     }
 }

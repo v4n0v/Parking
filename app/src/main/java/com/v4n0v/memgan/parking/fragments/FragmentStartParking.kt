@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationSet
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -19,6 +20,7 @@ import com.v4n0v.memgan.parking.activities.PREFS_TIME
 import com.v4n0v.memgan.parking.mvp.presenters.StartParkingPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
 import com.v4n0v.memgan.parking.mvp.views.StartParking
+import com.v4n0v.memgan.parking.utils.Animator
 import com.v4n0v.memgan.parking.utils.Helper
 import kotlinx.android.synthetic.main.fragment_parking.*
 import java.util.*
@@ -72,6 +74,24 @@ class FragmentStartParking : BaseFragment(), StartParking {
             }
             presenter.parkMe(hoursPicker.value, minutesPicker.value)
         }
+
+        btnPark.setOnClickListener {
+            if (etParkingPlace.text.isEmpty() || etParkingPlace.text.toString().length != 4 ) {
+                toast(getString(R.string.empty_perking))
+                return@setOnClickListener
+            }
+
+            if ( minutesPicker.value == 0 && hoursPicker.value==0){
+                toast(getString(R.string.empty_time))
+                return@setOnClickListener
+            }
+            presenter.parkMe(hoursPicker.value, minutesPicker.value)
+        }
+
+        val showAnimationSet = AnimationSet(false)
+        showAnimationSet.addAnimation(Animator.showScaleAnimation())
+        showAnimationSet.addAnimation(Animator.toNormalScaleAnimation())
+        btnPark.startAnimation(showAnimationSet)
     }
 
 

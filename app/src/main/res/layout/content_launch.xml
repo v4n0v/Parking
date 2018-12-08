@@ -9,22 +9,35 @@
     tools:showIn="@layout/activity_launch"
     android:background="@color/bg_gray">
 
+    <ImageView
+        android:id="@+id/ivParking"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/bg_gray"
+        />
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/mainContainer"
+        android:id="@+id/switchContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
        android:background="@color/bg_white"
         android:elevation="@dimen/size_2dp"
+        android:layout_marginBottom="@dimen/margin_8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <com.v4n0v.memgan.parking.components.TextViewPlus
             android:id="@+id/tvServiceStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:textSize="@dimen/text"
+            android:textSize="@dimen/text_18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/switchStatus"
             app:layout_constraintEnd_toStartOf="@+id/switchStatus"
@@ -47,12 +60,11 @@
         android:id="@+id/fragmentContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/bg_gray"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainContainer">
+        app:layout_constraintTop_toBottomOf="@+id/switchContainer">
 
     </FrameLayout>
 </android.support.constraint.ConstraintLayout>

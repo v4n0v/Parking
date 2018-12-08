@@ -37,11 +37,11 @@
     </style>
 
     <style name="EditScreenTextInputLayoutStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorControlNormal">@color/colorPrimary</item>
-        <item name="colorControlActivated">@color/colorPrimary</item>
-        <item name="colorControlHighlight">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorPrimary</item>
-        <item name="android:textColorHint">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/colorSecondaryText</item>
+        <item name="colorControlActivated">@color/colorPrimaryText</item>
+        <item name="colorControlHighlight">@color/colorSecondaryText</item>
+        <item name="colorAccent">@color/colorSecondaryText</item>
+        <item name="android:textColorHint">@color/colorSecondaryText</item>
     </style>
 
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -49,14 +49,32 @@
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="blockElement">
-        <item name="android:background">@color/bg_white</item>
+        <item name="android:background">@color/bg_white_solid</item>
         <item name=" android:elevation">@dimen/size_2dp</item>
+
+    </style>
+
+
+    <style name="MyButton" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingStart">@dimen/std_margin</item>
+        <item name="android:paddingEnd">@dimen/std_margin</item>
+        <item name="android:background">@drawable/round_button</item>
+    </style>
+    <style name="containerElement">
+
         <item name="android:padding">@dimen/margin_8dp</item>
     </style>
 
-    <style name="containerElement">
-        <item name="android:background">@color/bg_gray</item>
-        <item name="android:padding">@dimen/margin_8dp</item>
+    <style name="blockHeader">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_18sp</item>
+    </style>
+
+    <style name="blockUnderline">
+        <item name="android:src">@color/colorPrimaryDark</item>
+        <item name="android:layout_height">@dimen/size_2dp</item>
     </style>
 
 </resources>

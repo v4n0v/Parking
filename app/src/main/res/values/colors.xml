@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#607D8B</color>
-    <color name="colorPrimaryDark">#455a64</color>
-    <color name="colorAccent">#FF5722</color>
+    <!--<color name="colorPrimary">#4CAF50</color>-->
+    <!--<color name="colorPrimaryDark">#388E3C</color>-->
+    <!--<color name="colorAccent">#7C4DFF</color>-->
+
+    <color name="colorPrimary">#0366b4</color>
+    <color name="colorPrimaryDark">#01477e</color>
+    <color name="colorAccent">#818b0d</color>
+    <!--<color name="colorPrimary">#3F51B5  </color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <!--<color name="colorAccent">#8BC34A</color>-->
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#757575</color>
     <color name="colorParkingBlue">#005ca1</color>
@@ -10,5 +17,7 @@
     <color name="white">#FFFFFF</color>
     <color name="ic_launcher_background">#0366b4</color>
     <color name="bg_gray">#e6e5ea</color>
-    <color name="bg_white">#fafafc</color>
+    <color name="bg_blue_exposed">#f7fbff</color>
+    <color name="bg_white">#cbfafafc</color>
+    <color name="bg_white_solid">#eefafafc</color>
 </resources>

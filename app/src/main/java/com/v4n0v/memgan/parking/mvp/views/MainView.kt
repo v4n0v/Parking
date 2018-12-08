@@ -14,5 +14,8 @@ interface MainView : MvpView {
     fun startParking()
     fun saveTimePreferences(time: Long)
     fun switchFragment(state: LaunchActivity.State)
+    fun showSwitch()
+    fun hideSwitch()
+    fun markTutorialViewed()
 
 }

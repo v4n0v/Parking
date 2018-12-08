@@ -1,121 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:foo="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_gray"
+
     android:padding="@dimen/margin_8dp">
+
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/containerDescription"
+        style="@style/blockElement"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        style="@style/blockElement"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tvHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/attention"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="@dimen/margin_8dp">
+
+            <com.v4n0v.memgan.parking.components.TextViewPlus
+                android:id="@+id/tvHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/attention"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/border"
+                style="@style/blockUnderline"
+                android:layout_width="0dp"
+                app:layout_constraintEnd_toEndOf="@+id/tvHeader"
+                app:layout_constraintStart_toStartOf="@+id/tvHeader"
+                app:layout_constraintTop_toBottomOf="@+id/tvHeader"
+                tools:ignore="ContentDescription" />
+
+            <com.v4n0v.memgan.parking.components.TextViewPlus
+                android:id="@+id/tvNoServiceMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="start"
+                android:textColor="@color/colorPrimaryText"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvHeader"
+                app:layout_constraintVertical_bias="0.3"
+                foo:customFont="roboto.ttf"
+                tools:text="@string/noServMessageStart" />
+
+            <!--<WebView-->
+            <!--android:id="@+id/tvNoServiceMessage"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/border" />-->
+        </android.support.constraint.ConstraintLayout>
 
         <ImageView
-            android:id="@+id/border"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/size_2dp"
-            android:src="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="@+id/tvHeader"
-            app:layout_constraintStart_toStartOf="@+id/tvHeader"
-            app:layout_constraintTop_toBottomOf="@+id/tvHeader"
-            tools:ignore="ContentDescription" />
-
-        <WebView
-            android:id="@+id/tvNoServiceMessage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/border2"
+            style="@style/blockUnderline"
+            android:layout_width="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/border"
-             />
-
-        <!--<TextView-->
-        <!--android:id="@+id/tvNoServiceMessage"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginStart="32dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:layout_marginEnd="32dp"-->
-        <!--android:layout_marginBottom="8dp"-->
-        <!--android:gravity="center"-->
-        <!--android:textSize="@dimen/size_16dp"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--app:layout_constraintVertical_bias="0.3" />-->
+            tools:ignore="ContentDescription" />
 
 
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
+        style="@style/blockElement"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        style="@style/blockElement"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/containerDescription">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/accessibility_service_label"
-            android:textColor="@color/colorPrimaryText"
-            app:layout_constraintBottom_toTopOf="@+id/guidelineH"
-            app:layout_constraintStart_toEndOf="@+id/imageView2" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="@dimen/margin_8dp">
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|start"
-            android:layout_marginStart="8dp"
-            android:text="@string/turnOn"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="@+id/guidelineH" />
+            <com.v4n0v.memgan.parking.components.TextViewPlus
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/accessibility_service_label"
+                android:textColor="@color/colorPrimaryText"
+                app:layout_constraintBottom_toTopOf="@+id/guidelineH"
+                app:layout_constraintStart_toEndOf="@+id/imageView2" />
+
+            <com.v4n0v.memgan.parking.components.TextViewPlus
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start"
+                android:layout_marginStart="8dp"
+                android:text="@string/turnOn"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="@+id/guidelineH" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="49dp"
+                android:layout_height="49dp"
+                android:layout_gravity="center|end"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@mipmap/ic_launcher_round" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guidelineH"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
+        </android.support.constraint.ConstraintLayout>
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="49dp"
-            android:layout_height="49dp"
-            android:layout_gravity="center|end"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
+            android:id="@+id/border3"
+            style="@style/blockUnderline"
+            android:layout_width="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/ic_launcher_round" />
+            tools:ignore="ContentDescription" />
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guidelineH"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

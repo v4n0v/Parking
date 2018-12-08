@@ -2,6 +2,7 @@ package com.v4n0v.memgan.parking.activities
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,9 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.view.Menu
-import android.view.MenuItem
-import android.view.ViewGroup
+import android.view.*
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -23,13 +22,14 @@ import com.v4n0v.memgan.parking.mvp.BaseActivity
 import com.v4n0v.memgan.parking.mvp.presenters.MainPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
 import com.v4n0v.memgan.parking.utils.Helper
-import com.v4n0v.memgan.parking.utils.Items
 import kotlinx.android.synthetic.main.activity_launch.*
 import kotlinx.android.synthetic.main.content_launch.*
-import android.view.Gravity
 import android.widget.*
+import com.v4n0v.memgan.parking.fragments.FragmentTutorial
 import com.v4n0v.memgan.parking.utils.Helper.TIMER
 import com.v4n0v.memgan.parking.utils.Helper.timerFormat
+import android.support.v4.content.ContextCompat.getSystemService
+import android.view.inputmethod.InputMethodManager
 
 
 private const val PERMISSION_FOR_ALL_REQUEST_CODE = 1654
@@ -37,30 +37,31 @@ const val PREFS_TIME = "prefs"
 
 
 class LaunchActivity : MainView, BaseActivity() {
+    override fun markTutorialViewed() {
+        getSharedPreferences("tutorial", Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean("isTutorViewed", true)
+                .apply()
+    }
+
     companion object {
         const val SETTINGS_TIME = "time"
+        var lastTime = 0L
     }
 
-    enum class State { NO_SERVICE, PARKING, TIMER }
+    enum class State { NO_SERVICE, PARKING, TIMER, TUTORIAL }
 
-
-    var currentState = State.NO_SERVICE
-    @InjectPresenter
-    lateinit var presenter: MainPresenter
-
-
-    @ProvidePresenter
-    internal fun providePresenter(): MainPresenter {
-        return MainPresenter()
-    }
+    //todo верни
+//    var currentState = State.NO_SERVICE
+    var currentState = State.TUTORIAL
 
     private var parkIntent: Intent? = null
     private var clickIntent: Intent? = null
 
     override fun onResume() {
         super.onResume()
-
-        presenter.checkState()
+        initialiaze()
+        checkState()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,25 +73,39 @@ class LaunchActivity : MainView, BaseActivity() {
     @SuppressLint("SetTextI18n")
     override fun initialiaze() {
 //        switchStatus.setOnClickListener { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
-
         switchStatus.setOnCheckedChangeListener { _, _ ->
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
 
+    }
 
+    override fun onBackPressed() {
+        if(System.currentTimeMillis()- lastTime > 3000) {
+            lastTime = System.currentTimeMillis()
+            super.onBackPressed()
+        } else {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(switchStatus.getWindowToken(), 0)
+            super.onBackPressed()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> {
-                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-                true
-            }
+//            R.id.action_settings -> {
+//                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+//                true
+//            }
             R.id.action_time -> {
                 if (currentState == State.PARKING)
                     showTimeDialog()
                 else
                     toastLong("Включите сервис и перейдите на экран настройки параметров парковки")
+                true
+            }
+            R.id.action_tutorial -> {
+                hideSwitch()
+                switchFragment(State.TUTORIAL)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -117,19 +132,27 @@ class LaunchActivity : MainView, BaseActivity() {
             State.TIMER -> beginTransaction(FragmentTimer())
             State.PARKING -> beginTransaction(FragmentStartParking())
             State.NO_SERVICE -> beginTransaction(FragmentNoService())
+            State.TUTORIAL -> beginTransaction(FragmentTutorial())
         }
         currentState = state
     }
 
     override fun checkState() {
-        if (Helper.checkAccessibilityService(this)) {
-            tvServiceStatus.text = getString(R.string.service_Ok)
-            switchStatus.isChecked = true
-            switchFragment(State.PARKING)
+        val sp = getSharedPreferences("tutorial", Context.MODE_PRIVATE)
+        val isViewed = sp.getBoolean("isTutorViewed", false)
+        if (!isViewed) {
+            hideSwitch()
+            switchFragment(State.TUTORIAL)
         } else {
-            tvServiceStatus.text = getString(R.string.service_unavailable)
-            switchStatus.isChecked = false
-            switchFragment(State.NO_SERVICE)
+            if (Helper.checkAccessibilityService(this)) {
+                tvServiceStatus.text = getString(R.string.service_Ok)
+                switchStatus.isChecked = true
+                switchFragment(State.PARKING)
+            } else {
+                tvServiceStatus.text = getString(R.string.service_unavailable)
+                switchStatus.isChecked = false
+                switchFragment(State.NO_SERVICE)
+            }
         }
 
         if (!Helper.checkPermissions(this))
@@ -186,6 +209,14 @@ class LaunchActivity : MainView, BaseActivity() {
             switchFragment(State.PARKING)
         }
         builder.show()
+    }
+
+    override fun showSwitch() {
+        switchContainer.visibility = View.VISIBLE
+    }
+
+    override fun hideSwitch() {
+        switchContainer.visibility = View.GONE
     }
 
 

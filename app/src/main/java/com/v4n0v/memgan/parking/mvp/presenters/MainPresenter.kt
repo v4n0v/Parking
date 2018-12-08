@@ -13,7 +13,7 @@ class MainPresenter : MvpPresenter<MainView>() {
         super.onFirstViewAttach()
         initialize()
 
-        viewState.initialiaze()
+      //  viewState.initialiaze()
 //        viewState.checkState()
     }
 
