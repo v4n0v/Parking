@@ -15,13 +15,15 @@ import com.v4n0v.memgan.parking.components.ImageModel
 import com.v4n0v.memgan.parking.components.OnSlideChanged
 import com.v4n0v.memgan.parking.components.SlidingImageAdapter
 import com.v4n0v.memgan.parking.mvp.views.MainView
+import com.v4n0v.memgan.parking.utils.Animator.Companion.changeColorAnimation
 import kotlinx.android.synthetic.main.fragment_tutorial.*
+import timber.log.Timber
 
 
 class FragmentTutorial : BaseFragment() {
     private var imageModelArrayList = mutableListOf<ImageModel>()
     private val myImageList = intArrayOf(R.drawable.slide_1, R.drawable.slide_2, R.drawable.slide_3, R.drawable.slide_4)
-
+    private var previousPos: Int? = null
     lateinit var activity: MainView
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -50,7 +52,7 @@ class FragmentTutorial : BaseFragment() {
         lp.weight = 1f
 
         val root = LinearLayout(activity as Context)
-        root.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+        root.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         root.orientation = HORIZONTAL
         root.gravity = Gravity.CENTER
 
@@ -63,20 +65,18 @@ class FragmentTutorial : BaseFragment() {
 
         }
         couterContainer.addView(root)
-        val containerPrams= LinearLayout.LayoutParams(resources.getDimensionPixelSize(R.dimen.size_5dp), resources.getDimensionPixelSize(R.dimen.size_5dp))
+        val containerPrams = LinearLayout.LayoutParams(resources.getDimensionPixelSize(R.dimen.size_5dp), resources.getDimensionPixelSize(R.dimen.size_5dp))
         containerPrams.gravity = Gravity.CENTER
-       // couterContainer.layoutParams= containerPrams
+        // couterContainer.layoutParams= containerPrams
 
         couterContainer.gravity = Gravity.CENTER
         imagePager.adapter = SlidingImageAdapter(activity as Context, imageModelArrayList)
         imagePager.addOnPageChangeListener(object : OnSlideChanged() {
             override fun onChange(pos: Int) {
-                for (i in 0 until images.size) {
-                    if (pos != i)
-                        images[i].setBackgroundColor(ContextCompat.getColor(activity as Context, R.color.colorPrimary))
-                    else
-                        images[i].setBackgroundColor(ContextCompat.getColor(activity as Context, R.color.colorAccent))
-                }
+                if (previousPos != null)
+                    images[previousPos!!].setBackgroundColor(ContextCompat.getColor(activity as Context, R.color.colorPrimary))
+                images[pos].setBackgroundColor(ContextCompat.getColor(activity as Context, R.color.colorAccent))
+                previousPos = pos
             }
         })
     }

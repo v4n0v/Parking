@@ -17,11 +17,13 @@ class ImageModel {
     var imageDrawable: Int = 0
 }
 abstract class  OnSlideChanged: ViewPager.OnPageChangeListener{
-    abstract fun onChange(pos:Int )
+
+    abstract fun onChange(pos:Int)
     override fun onPageScrollStateChanged(p0: Int) {}
 
     override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
         onChange(p0)
+
     }
 
     override fun onPageSelected(p0: Int) {}

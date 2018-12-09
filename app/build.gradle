@@ -36,14 +36,8 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     //kotlin
     implementation 'com.pawegio.kandroid:kandroid:0.5.0@aar'
-    //RX
-    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
-    implementation "io.reactivex.rxjava2:rxandroid:2.0.1"
-    //MVP
-    implementation 'com.arello-mobile:moxy:1.5.3'
-    implementation 'com.arello-mobile:moxy-app-compat:1.5.3'
-    kapt 'com.arello-mobile:moxy-compiler:1.5.3'
-    annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.3'
+
+     
 
     implementation 'com.jakewharton.timber:timber:4.7.0'
     testImplementation 'junit:junit:4.12'

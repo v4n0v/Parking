@@ -3,12 +3,12 @@ package com.v4n0v.memgan.parking.mvp
 import android.content.DialogInterface
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
-import com.arellomobile.mvp.MvpAppCompatActivity
 import com.v4n0v.memgan.parking.R
 import timber.log.Timber
 
-open class BaseActivity:MvpAppCompatActivity(){
+open class BaseActivity: AppCompatActivity(){
 
     fun log(msg:String){
         Timber.d(msg)

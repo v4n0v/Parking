@@ -2,6 +2,7 @@ package com.v4n0v.memgan.parking.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -10,14 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationSet
-import com.arellomobile.mvp.MvpAppCompatActivity
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.v4n0v.memgan.parking.R
 import com.v4n0v.memgan.parking.activities.LaunchActivity
 import com.v4n0v.memgan.parking.activities.LaunchActivity.Companion.SETTINGS_TIME
 import com.v4n0v.memgan.parking.activities.PREFS_TIME
-import com.v4n0v.memgan.parking.mvp.presenters.StartParkingPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
 import com.v4n0v.memgan.parking.mvp.views.StartParking
 import com.v4n0v.memgan.parking.utils.Animator
@@ -28,22 +25,30 @@ import java.util.*
 
 class FragmentStartParking : BaseFragment(), StartParking {
 
-    @InjectPresenter
-    lateinit var presenter: StartParkingPresenter
 
-    @ProvidePresenter
-    fun provide(): StartParkingPresenter {
-        return StartParkingPresenter(getString(R.string.hours), getString(R.string.minutes))
-    }
 
     lateinit var activity: MainView
-
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         activity = context as MainView
     }
 
+    private fun init(){
+        for (i in 0 until 13)
+            hoursList.add("$i ${getString(R.string.hours)}")
+        for (i in 0 until 60 step 5)
+            minutesList.add("$i ${getString(R.string.minutes)}")
+
+        init(hoursList.toTypedArray(), minutesList.toTypedArray())
+    }
+
+    fun parkMe(hoursId: Int, minutesId: Int) {
+        parkMe(hoursList[hoursId], minutesList[minutesId])
+    }
+
+    private val hoursList = mutableListOf<String>()
+    private val minutesList = mutableListOf<String>()
     @SuppressLint("SetTextI18n")
     override fun init(hours: Array<String>, minutes: Array<String>) {
         hoursPicker.wrapSelectorWheel = true
@@ -55,7 +60,7 @@ class FragmentStartParking : BaseFragment(), StartParking {
         minutesPicker.minValue = 0
         minutesPicker.maxValue = minutes.size - 1
 
-        val prefs = context?.getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
+        val prefs = context?.getSharedPreferences(PREFS_TIME, MODE_PRIVATE)
         tvTimeCount.text = "Парковка через: ${Helper.timerFormat.format(prefs?.getLong(SETTINGS_TIME, Helper.TIMER))}"
 //        //todo УДОЛИ
 //        etParkingPlace.setText("4444")
@@ -72,7 +77,7 @@ class FragmentStartParking : BaseFragment(), StartParking {
                 toast(getString(R.string.empty_time))
                 return@setOnClickListener
             }
-            presenter.parkMe(hoursPicker.value, minutesPicker.value)
+          parkMe(hoursPicker.value, minutesPicker.value)
         }
 
         btnPark.setOnClickListener {
@@ -85,19 +90,20 @@ class FragmentStartParking : BaseFragment(), StartParking {
                 toast(getString(R.string.empty_time))
                 return@setOnClickListener
             }
-            presenter.parkMe(hoursPicker.value, minutesPicker.value)
+           parkMe(hoursPicker.value, minutesPicker.value)
         }
-
-        val showAnimationSet = AnimationSet(false)
-        showAnimationSet.addAnimation(Animator.showScaleAnimation())
-        showAnimationSet.addAnimation(Animator.toNormalScaleAnimation())
-        btnPark.startAnimation(showAnimationSet)
+        btnPark.startAnimation(Animator.zoomInAnimation())
     }
 
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_parking, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init()
     }
 
     override fun parkMe(hours: String, minutes: String) {

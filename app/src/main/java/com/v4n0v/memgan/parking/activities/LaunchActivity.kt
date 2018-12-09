@@ -11,25 +11,22 @@ import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.*
-import com.arellomobile.mvp.MvpAppCompatActivity
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
+import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
+import android.widget.SeekBar
+import android.widget.TextView
 import com.v4n0v.memgan.parking.R
 import com.v4n0v.memgan.parking.fragments.FragmentNoService
 import com.v4n0v.memgan.parking.fragments.FragmentStartParking
 import com.v4n0v.memgan.parking.fragments.FragmentTimer
+import com.v4n0v.memgan.parking.fragments.FragmentTutorial
 import com.v4n0v.memgan.parking.mvp.BaseActivity
-import com.v4n0v.memgan.parking.mvp.presenters.MainPresenter
 import com.v4n0v.memgan.parking.mvp.views.MainView
 import com.v4n0v.memgan.parking.utils.Helper
-import kotlinx.android.synthetic.main.activity_launch.*
-import kotlinx.android.synthetic.main.content_launch.*
-import android.widget.*
-import com.v4n0v.memgan.parking.fragments.FragmentTutorial
 import com.v4n0v.memgan.parking.utils.Helper.TIMER
 import com.v4n0v.memgan.parking.utils.Helper.timerFormat
-import android.support.v4.content.ContextCompat.getSystemService
-import android.view.inputmethod.InputMethodManager
+import kotlinx.android.synthetic.main.activity_launch.*
+import kotlinx.android.synthetic.main.content_launch.*
 
 
 private const val PERMISSION_FOR_ALL_REQUEST_CODE = 1654
@@ -161,7 +158,7 @@ class LaunchActivity : MainView, BaseActivity() {
     }
 
     override fun saveTimePreferences(time: Long) {
-        val sp = getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
+        val sp = getSharedPreferences(PREFS_TIME, MODE_PRIVATE)
         val e = sp.edit()
         e.putLong(SETTINGS_TIME, time)
         e.apply()
@@ -176,7 +173,7 @@ class LaunchActivity : MainView, BaseActivity() {
         ll.orientation = LinearLayout.VERTICAL
 
 
-        val prefs = getSharedPreferences(PREFS_TIME, MvpAppCompatActivity.MODE_PRIVATE)
+        val prefs = getSharedPreferences(PREFS_TIME, MODE_PRIVATE)
         val time = prefs?.getLong(SETTINGS_TIME, Helper.TIMER)
         var currentTime = 0L
         val timeTv = TextView(this)
