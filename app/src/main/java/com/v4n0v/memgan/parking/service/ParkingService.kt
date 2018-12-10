@@ -134,6 +134,7 @@ class ParkingService : AccessibilityService() {
         for (i in 0 until depth) {
             spacerString += '-'.toString()
         }
+        Timber.d("onAccessibilityEvent " + spacerString + nodeInfo.className + " " + nodeInfo.viewIdResourceName)
 
         for (i in 0 until nodeInfo.childCount) {
             logViewHierarchy(nodeInfo.getChild(i), depth + 1)
@@ -167,6 +168,7 @@ class ParkingService : AccessibilityService() {
     private fun pasteParking(nodeInfo: AccessibilityNodeInfo, parkingnum: String): Boolean {
         var success = false
         if (!interrupted) {
+            logViewHierarchy(nodeInfo, 0)
             val editTextNodes = nodeInfo.findAccessibilityNodeInfosByViewId(PARKING_ID)
                     ?: return false
             Timber.d("onAccessibilityEvent edit text found")

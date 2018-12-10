@@ -33,4 +33,14 @@ open class BaseFragment:Fragment(){
                 .show()
     }
 
+    fun showCacelableInformDialog(title:String, message: String, onClickListener: DialogInterface.OnClickListener) {
+        AlertDialog.Builder(context!!)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(true)
+                .setPositiveButton("ОК", onClickListener)
+                .create()
+                .show()
+    }
+
 }

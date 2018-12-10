@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
@@ -47,9 +48,6 @@ class LaunchActivity : MainView, BaseActivity() {
     }
 
     enum class State { NO_SERVICE, PARKING, TIMER, TUTORIAL }
-
-    //todo верни
-//    var currentState = State.NO_SERVICE
     var currentState = State.TUTORIAL
 
     private var parkIntent: Intent? = null
@@ -71,7 +69,17 @@ class LaunchActivity : MainView, BaseActivity() {
     override fun initialiaze() {
 //        switchStatus.setOnClickListener { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
         switchStatus.setOnCheckedChangeListener { _, _ ->
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            val parkIntent = packageManager?.getLaunchIntentForPackage(Helper.PACKAGE_NAME)
+            if (parkIntent != null) {
+                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            }else {
+                showCacelableInformDialog(getString(R.string.warning), getString(R.string.no_app_message), DialogInterface.OnClickListener {dialog, _ ->
+                    val i = Intent(android.content.Intent.ACTION_VIEW);
+                    i.data = Uri.parse("https://play.google.com/store/apps/details?id=${Helper.PACKAGE_NAME}")
+                    startActivity(i)
+                    dialog.dismiss()
+                })
+            }
         }
 
     }

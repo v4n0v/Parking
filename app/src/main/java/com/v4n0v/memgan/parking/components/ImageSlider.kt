@@ -7,6 +7,7 @@ import java.nio.file.Files.size
 import android.view.LayoutInflater
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -64,6 +65,8 @@ class SlidingImageAdapter(context: Context, private val imageModelArrayList: Lis
             tv.visibility = View.GONE
         else
             tv.text = text
+
+        tv.gravity = Gravity.CENTER
         val imageView = imageLayout
                 .findViewById(R.id.image) as ImageView
         imageView.setImageResource(imageModelArrayList[position].imageDrawable)

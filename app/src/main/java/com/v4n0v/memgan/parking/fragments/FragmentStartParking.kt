@@ -123,7 +123,7 @@ class FragmentStartParking : BaseFragment(), StartParking {
             activity.initIntent(clickIntent, parkIntent)
             activity.switchFragment(LaunchActivity.State.TIMER)
         } else {
-            showInformDialog(getString(R.string.warning), getString(R.string.no_app_message), DialogInterface.OnClickListener { _, _ ->
+            showCacelableInformDialog(getString(R.string.warning), getString(R.string.no_app_message), DialogInterface.OnClickListener { _, _ ->
                 val i = Intent(android.content.Intent.ACTION_VIEW);
                 i.data = Uri.parse("https://play.google.com/store/apps/details?id=${Helper.PACKAGE_NAME}")
                 startActivity(i)

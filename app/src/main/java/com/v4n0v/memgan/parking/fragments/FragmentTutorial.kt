@@ -1,12 +1,16 @@
 package com.v4n0v.memgan.parking.fragments
 
 import android.content.Context
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.StateListDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
@@ -15,9 +19,7 @@ import com.v4n0v.memgan.parking.components.ImageModel
 import com.v4n0v.memgan.parking.components.OnSlideChanged
 import com.v4n0v.memgan.parking.components.SlidingImageAdapter
 import com.v4n0v.memgan.parking.mvp.views.MainView
-import com.v4n0v.memgan.parking.utils.Animator.Companion.changeColorAnimation
 import kotlinx.android.synthetic.main.fragment_tutorial.*
-import timber.log.Timber
 
 
 class FragmentTutorial : BaseFragment() {
@@ -46,26 +48,31 @@ class FragmentTutorial : BaseFragment() {
         }
 
         val images = mutableListOf<ImageView>()
-        val lp = LinearLayout.LayoutParams(resources.getDimensionPixelSize(R.dimen.size_5dp), resources.getDimensionPixelSize(R.dimen.size_5dp))
+//        val lp = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+        val lp = LinearLayout.LayoutParams(resources.getDimensionPixelSize(R.dimen.std_margin), resources.getDimensionPixelSize(R.dimen.std_margin))
         lp.marginStart = 5
         lp.marginEnd = 5
         lp.weight = 1f
 
         val root = LinearLayout(activity as Context)
+//        root.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         root.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         root.orientation = HORIZONTAL
         root.gravity = Gravity.CENTER
 
         for (i in 0 until imageModelArrayList.size) {
             val iv = ImageView(activity as Context)
-            iv.setBackgroundColor(ContextCompat.getColor(activity as Context, R.color.colorPrimary))
+//            iv.setBackgroundColor(ContextCompat.getColor(activity as Context, R.color.colorPrimary))
             iv.layoutParams = lp
+            iv.background = makeSelector(ContextCompat.getColor(activity as Context, R.color.colorPrimary), 8f, ContextCompat.getColor(activity as Context, R.color.colorAccent), 12f)
+//            iv.background = ((activity as Context).getDrawable(R.drawable.selector_slider_default))
             root.addView(iv)
             images.add(iv)
 
         }
         couterContainer.addView(root)
-        val containerPrams = LinearLayout.LayoutParams(resources.getDimensionPixelSize(R.dimen.size_5dp), resources.getDimensionPixelSize(R.dimen.size_5dp))
+        val containerPrams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+//        val containerPrams = LinearLayout.LayoutParams(resources.getDimensionPixelSize(R.dimen.size_5dp), resources.getDimensionPixelSize(R.dimen.size_5dp))
         containerPrams.gravity = Gravity.CENTER
         // couterContainer.layoutParams= containerPrams
 
@@ -73,12 +80,33 @@ class FragmentTutorial : BaseFragment() {
         imagePager.adapter = SlidingImageAdapter(activity as Context, imageModelArrayList)
         imagePager.addOnPageChangeListener(object : OnSlideChanged() {
             override fun onChange(pos: Int) {
-                if (previousPos != null)
-                    images[previousPos!!].setBackgroundColor(ContextCompat.getColor(activity as Context, R.color.colorPrimary))
-                images[pos].setBackgroundColor(ContextCompat.getColor(activity as Context, R.color.colorAccent))
-                previousPos = pos
+                activity as Context
+                if (previousPos != pos) {
+                    if (previousPos != null && previousPos != pos)
+                        images[previousPos!!].isActivated = false
+                    images[pos].isActivated = true
+                    previousPos = pos
+                }
             }
         })
+    }
+
+    private fun makeSelector(color: Int, size1:Float, color2: Int, size2:Float): StateListDrawable {
+        val res = StateListDrawable()
+        res.setExitFadeDuration(250)
+
+        res.alpha = 255
+        res.addState(intArrayOf(android.R.attr.state_activated), getOval(color2, size2))
+        res.addState(intArrayOf(), getOval(color, size1))
+        return res
+    }
+
+    private fun getOval (color:Int, size:Float):ShapeDrawable{
+        val drawable = ShapeDrawable(OvalShape())
+        drawable.paint.color = color
+        drawable.paint.strokeWidth = size
+        drawable.paint.isAntiAlias = true
+        return drawable
     }
 
     private fun populateList(): List<ImageModel> {
@@ -91,5 +119,7 @@ class FragmentTutorial : BaseFragment() {
 
         return list
     }
+
+
 
 }

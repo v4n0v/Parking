@@ -31,6 +31,17 @@ open class BaseActivity: AppCompatActivity(){
                 .show()
     }
 
+
+    fun showCacelableInformDialog(title:String, message: String, onClickListener: DialogInterface.OnClickListener) {
+        AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(true)
+                .setPositiveButton("ОК", onClickListener)
+                .create()
+                .show()
+    }
+
     fun beginTransaction(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)

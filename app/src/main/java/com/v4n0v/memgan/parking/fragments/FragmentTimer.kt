@@ -33,6 +33,11 @@ class FragmentTimer : BaseFragment(), TimerView {
         return inflater.inflate(R.layout.fragment_timer, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init()
+    }
+
     override fun init() {
         val prefs = context?.getSharedPreferences(PREFS_TIME, MODE_PRIVATE)
         val taskTime = (prefs?.getLong("time", Helper.TIMER)) ?:Helper.TIMER
@@ -47,11 +52,12 @@ class FragmentTimer : BaseFragment(), TimerView {
                 progressBar.progress = 100 - millisUntilFinished.toInt() * 100 / taskTime.toInt()
             }
         }
+        timer?.start()
         fabCancel.setOnClickListener {
             timer?.cancel()
             activity.switchFragment(LaunchActivity.State.PARKING)
         }
         fabCancel.startAnimation(zoomInAnimation())
-        timer?.start()
+
     }
 }
